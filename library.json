@@ -1,8 +1,8 @@
 {
 	"id": "{20AACCAE-F43C-40C2-BECF-DFCCB70558D0}",
 	"author": "Ch. Damsky",
-	"name": "IPSymconServerStatus",
-	"url": "https://github.com/demel42/IPSymconServerStatus",
+	"name": "IPSymconServerInfo",
+	"url": "https://github.com/demel42/IPSymconServerInfo",
 	"compatibility": {
 		"version": "4.4"
 	},

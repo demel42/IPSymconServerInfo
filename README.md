@@ -1,4 +1,4 @@
-# IPSymconServerStatus
+# IPSymconServerInfo
 
 [![IPS-Version](https://img.shields.io/badge/Symcon_Version-4.4+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
 ![Module-Version](https://img.shields.io/badge/Modul_Version-1.0-blue.svg)
@@ -41,7 +41,7 @@ In der _Modules_ Instanz rechts oben auf den Button __*Hinzufügen*__ drücken.
 
 In dem sich öffnenden Fenster folgende URL hinzufügen:
 
-`https://github.com/demel42/IPSymconServerStatus.git`
+`https://github.com/demel42/IPSymconServerInfo.git`
 
 und mit _OK_ bestätigen.
 
@@ -49,7 +49,7 @@ Anschließend erscheint ein Eintrag für das Modul in der Liste der Instanz _Mod
 
 ### c. Einrichtung in IPS
 
-In IP-Symcon nun _Instanz hinzufügen_ (_CTRL+1_) auswählen unter der Kategorie, unter der man die Instanz hinzufügen will, und Hersteller _(sonstiges)_ und als Gerät _ServerStatus_ auswählen.
+In IP-Symcon nun _Instanz hinzufügen_ (_CTRL+1_) auswählen unter der Kategorie, unter der man die Instanz hinzufügen will, und Hersteller _(sonstiges)_ und als Gerät _ServerInfo_ auswählen.
 
 ## 4. Funktionsreferenz
 
@@ -70,4 +70,4 @@ GUIDs
 
 - Modul: `{20AACCAE-F43C-40C2-BECF-DFCCB70558D0}`
 - Instanzen:
-  - ServerStatus: `{99B3B506-0808-433A-9745-32CDD63BC307}`
+  - ServerInfo: `{99B3B506-0808-433A-9745-32CDD63BC307}`

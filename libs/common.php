@@ -23,7 +23,7 @@ if (@constant('IPS_BASE') == null) {
     define('KL_CUSTOM', IPS_LOGMESSAGE + 7);			// User Message
 }
 
-trait ServerStatusCommon
+trait ServerInfoCommon
 {
     protected function SetValue($Ident, $Value)
     {

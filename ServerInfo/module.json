@@ -1,13 +1,13 @@
 {
 	"id": "{99B3B506-0808-433A-9745-32CDD63BC307}",
-	"name": "ServerStatus",
+	"name": "ServerInfo",
 	"type": 3,
 	"vendor": "",
 	"aliases": [
-		"ServerStatus"
+		"ServerInfo"
 	],
 	"parentRequirements": [],
 	"childRequirements": [],
 	"implemented": [],
-	"prefix": "ServerStatus"
+	"prefix": "ServerInfo"
 }

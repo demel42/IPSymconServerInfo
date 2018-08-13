@@ -38,9 +38,9 @@ if (!defined('IPS_STRING')) {
     define('IPS_STRING', 3);
 }
 
-class ServerStatus extends IPSModule
+class ServerInfo extends IPSModule
 {
-    use ServerStatusCommon;
+    use ServerInfoCommon;
 
     public function Create()
     {
@@ -48,10 +48,10 @@ class ServerStatus extends IPSModule
 
         $this->RegisterPropertyInteger('update_interval', '0');
 
-        $this->RegisterTimer('UpdateData', 0, 'ServerStatus_UpdateData(' . $this->InstanceID . ');');
+        $this->RegisterTimer('UpdateData', 0, 'ServerInfo_UpdateData(' . $this->InstanceID . ');');
 
-        $this->CreateVarProfile('ServerStatus.ms', IPS_FLOAT, ' ms', 0, 0, 0, 0, '');
-        $this->CreateVarProfile('ServerStatus.MBits', IPS_FLOAT, ' MBit/s', 0, 0, 0, 1, '');
+        $this->CreateVarProfile('ServerInfo.ms', IPS_FLOAT, ' ms', 0, 0, 0, 0, '');
+        $this->CreateVarProfile('ServerInfo.MBits', IPS_FLOAT, ' MBit/s', 0, 0, 0, 1, '');
     }
 
     public function ApplyChanges()
@@ -62,9 +62,9 @@ class ServerStatus extends IPSModule
         $this->MaintainVariable('ISP', $this->Translate('Internet-Provider'), IPS_STRING, '', $vpos++, true);
         $this->MaintainVariable('IP', $this->Translate('external IP'), IPS_STRING, '', $vpos++, true);
         $this->MaintainVariable('Server', $this->Translate('Server'), IPS_STRING, '', $vpos++, true);
-        $this->MaintainVariable('Ping', $this->Translate('Ping'), IPS_FLOAT, 'ServerStatus.ms', $vpos++, true);
-        $this->MaintainVariable('Upload', $this->Translate('Upload'), IPS_FLOAT, 'ServerStatus.MBits', $vpos++, true);
-        $this->MaintainVariable('Download', $this->Translate('Download'), IPS_FLOAT, 'ServerStatus.MBits', $vpos++, true);
+        $this->MaintainVariable('Ping', $this->Translate('Ping'), IPS_FLOAT, 'ServerInfo.ms', $vpos++, true);
+        $this->MaintainVariable('Upload', $this->Translate('Upload'), IPS_FLOAT, 'ServerInfo.MBits', $vpos++, true);
+        $this->MaintainVariable('Download', $this->Translate('Download'), IPS_FLOAT, 'ServerInfo.MBits', $vpos++, true);
         $this->MaintainVariable('LastTest', $this->Translate('Last test'), IPS_INTEGER, '~UnixTimestamp', $vpos++, true);
 
         $this->SetStatus(102);
@@ -78,7 +78,7 @@ class ServerStatus extends IPSModule
         $formElements[] = ['type' => 'IntervalBox', 'name' => 'update_interval', 'caption' => 'Minutes'];
 
         $formActions = [];
-        $formActions[] = ['type' => 'Button', 'label' => 'Update data', 'onClick' => 'ServerStatus_UpdateData($id);'];
+        $formActions[] = ['type' => 'Button', 'label' => 'Update data', 'onClick' => 'ServerInfo_UpdateData($id);'];
 
         $formStatus = [];
         $formStatus[] = ['code' => '101', 'icon' => 'inactive', 'caption' => 'Instance getting created'];
