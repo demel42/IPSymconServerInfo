@@ -1,0 +1,12 @@
+{
+	"id": "{20AACCAE-F43C-40C2-BECF-DFCCB70558D0}",
+	"author": "Ch. Damsky",
+	"name": "IPSymconServerStatus",
+	"url": "https://github.com/demel42/IPSymconServerStatus",
+	"compatibility": {
+		"version": "4.4"
+	},
+	"version": "1.0",
+	"build": 0,
+	"date": 1534154361
+}
