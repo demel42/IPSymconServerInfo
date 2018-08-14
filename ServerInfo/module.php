@@ -77,10 +77,10 @@ class ServerInfo extends IPSModule
 
     public function ApplyChanges()
     {
-		$partition0_device = $this->ReadPropertyString('partition0_device');
-		$partition1_device = $this->ReadPropertyString('partition1_device');
-		$disk0_device = $this->ReadPropertyString('disk0_device');
-		$disk1_device = $this->ReadPropertyString('disk1_device');
+        $partition0_device = $this->ReadPropertyString('partition0_device');
+        $partition1_device = $this->ReadPropertyString('partition1_device');
+        $disk0_device = $this->ReadPropertyString('disk0_device');
+        $disk1_device = $this->ReadPropertyString('disk1_device');
 
         parent::ApplyChanges();
 
@@ -133,14 +133,13 @@ class ServerInfo extends IPSModule
 
     public function GetConfigurationForm()
     {
+        $formElements[] = ['type' => 'Label', 'label' => 'Partitions to be monitored'];
+        $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'partition0_device', 'caption' => '1st device'];
+        $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'partition1_device', 'caption' => '2nd device'];
 
-		$formElements[] = ['type' => 'Label', 'label' => 'Partitions to be monitored'];
-		$formElements[] = ['type' => 'ValidationTextBox', 'name' => 'partition0_device', 'caption' => '1st device'];
-		$formElements[] = ['type' => 'ValidationTextBox', 'name' => 'partition1_device', 'caption' => '2nd device'];
-
-		$formElements[] = ['type' => 'Label', 'label' => 'Disks to be monitored'];
-		$formElements[] = ['type' => 'ValidationTextBox', 'name' => 'disk0_device', 'caption' => '1st device'];
-		$formElements[] = ['type' => 'ValidationTextBox', 'name' => 'disk1_device', 'caption' => '2nd device'];
+        $formElements[] = ['type' => 'Label', 'label' => 'Disks to be monitored'];
+        $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'disk0_device', 'caption' => '1st device'];
+        $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'disk1_device', 'caption' => '2nd device'];
 
         $formElements[] = ['type' => 'Label', 'label' => 'Update data every X minutes'];
         $formElements[] = ['type' => 'IntervalBox', 'name' => 'update_interval', 'caption' => 'Minutes'];
@@ -176,7 +175,7 @@ class ServerInfo extends IPSModule
         $this->get_cpuinfo();
         $this->get_cpuload();
 
-		$this->SetValue('LastUpdate', time());
+        $this->SetValue('LastUpdate', time());
     }
 
     private function execute($cmd)
@@ -373,43 +372,43 @@ class ServerInfo extends IPSModule
     private function get_partition()
     {
         for ($cnt = 0; $cnt < 2; $cnt++) {
-			$device = $this->ReadPropertyString('partition' . $cnt . '_device');
+            $device = $this->ReadPropertyString('partition' . $cnt . '_device');
 
-			$Mountpoint = '';
-			$Size = 0;
-			$Used = 0;
-			$Available = 0;
-			$Usage = 0;
+            $Mountpoint = '';
+            $Size = 0;
+            $Used = 0;
+            $Available = 0;
+            $Usage = 0;
 
-			$res = $this->execute('df');
-			if ($res == '' || count($res) < 1) {
-				$this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
-				return false;
-			}
-			foreach ($res as $r) {
-				$s = preg_split("/[\s]+/", $r);
-				if (count($s) < 6) {
-					$this->SendDebug(__FUNCTION__, 'bad data: ' . $r, 0);
-					continue;
-				}
-				if ($s[0] == $device) {
-					$Size = floor($s[1] / (1024 * 1024) * 10) / 10;
-					$Used = floor($s[2] / (1024 * 1024) * 10) / 10;
-					$Available = floor($s[3] / (1024 * 1024) * 10) / 10;
-					if (preg_match('/([\d]*)/', $s[4], $q)) {
-						$Usage = $q[1];
-					}
-					$Mountpoint = $s[5];
-				}
-			}
+            $res = $this->execute('df');
+            if ($res == '' || count($res) < 1) {
+                $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                return false;
+            }
+            foreach ($res as $r) {
+                $s = preg_split("/[\s]+/", $r);
+                if (count($s) < 6) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . $r, 0);
+                    continue;
+                }
+                if ($s[0] == $device) {
+                    $Size = floor($s[1] / (1024 * 1024) * 10) / 10;
+                    $Used = floor($s[2] / (1024 * 1024) * 10) / 10;
+                    $Available = floor($s[3] / (1024 * 1024) * 10) / 10;
+                    if (preg_match('/([\d]*)/', $s[4], $q)) {
+                        $Usage = $q[1];
+                    }
+                    $Mountpoint = $s[5];
+                }
+            }
 
-			$this->SendDebug(__FUNCTION__, 'partition ' . $cnt . '=' . $device . ': size=' . $Size . ' GB, used=' . $Used . ' GB, available=' . $Available . ' GB, ' . $Usage . '%' . ', mountpoint=' . $Mountpoint, 0);
-			$this->SetValue('Partition' . $cnt . 'Mountpoint', $Mountpoint);
-			$this->SetValue('Partition' . $cnt . 'Size', $Size);
-			$this->SetValue('Partition' . $cnt . 'Used', $Used);
-			$this->SetValue('Partition' . $cnt . 'Available', $Available);
-			$this->SetValue('Partition' . $cnt . 'Usage', $Usage);
-		}
+            $this->SendDebug(__FUNCTION__, 'partition ' . $cnt . '=' . $device . ': size=' . $Size . ' GB, used=' . $Used . ' GB, available=' . $Available . ' GB, ' . $Usage . '%' . ', mountpoint=' . $Mountpoint, 0);
+            $this->SetValue('Partition' . $cnt . 'Mountpoint', $Mountpoint);
+            $this->SetValue('Partition' . $cnt . 'Size', $Size);
+            $this->SetValue('Partition' . $cnt . 'Used', $Used);
+            $this->SetValue('Partition' . $cnt . 'Available', $Available);
+            $this->SetValue('Partition' . $cnt . 'Usage', $Usage);
+        }
 
         return true;
     }
@@ -446,24 +445,24 @@ class ServerInfo extends IPSModule
     private function get_hddtemp()
     {
         for ($cnt = 0; $cnt < 2; $cnt++) {
-			$device = $this->ReadPropertyString('disk' . $cnt . '_device');
+            $device = $this->ReadPropertyString('disk' . $cnt . '_device');
 
-			$res = $this->execute('hddtemp ' . $device);
-			if ($res == '' || count($res) < 1) {
-				$this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
-				return false;
-			}
+            $res = $this->execute('hddtemp ' . $device);
+            if ($res == '' || count($res) < 1) {
+                $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                return false;
+            }
 
-			$Temp = 0;
+            $Temp = 0;
 
-			$s = preg_split("/[:\s]+/", $res[0]);
-			if (preg_match('/([\d]*)/', $s[2], $q)) {
-				$Temp = $q[1];
-			}
+            $s = preg_split("/[:\s]+/", $res[0]);
+            if (preg_match('/([\d]*)/', $s[2], $q)) {
+                $Temp = $q[1];
+            }
 
-			$this->SendDebug(__FUNCTION__, 'disk' . $cnt . '=' . $device . ': Temp=' . $Temp, 0);
-			$this->SetValue('Disk' . $cnt . 'Temp', $Temp);
-		}
+            $this->SendDebug(__FUNCTION__, 'disk' . $cnt . '=' . $device . ': Temp=' . $Temp, 0);
+            $this->SetValue('Disk' . $cnt . 'Temp', $Temp);
+        }
 
         return true;
     }
