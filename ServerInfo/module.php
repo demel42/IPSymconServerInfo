@@ -462,7 +462,7 @@ class ServerInfo extends IPSModule
 
             $Temp = 0;
 
-            $s = preg_split("/[:\s]+/", $res[0]);
+            $s = preg_split("/:[\s]+/", $res[0]);
             if (preg_match('/([\d]*)/', $s[2], $q)) {
                 $Temp = $q[1];
             }
