@@ -373,6 +373,8 @@ class ServerInfo extends IPSModule
     {
         for ($cnt = 0; $cnt < 2; $cnt++) {
             $device = $this->ReadPropertyString('partition' . $cnt . '_device');
+			if ($device == '')
+				continue;
 
             $Mountpoint = '';
             $Size = 0;
@@ -446,6 +448,8 @@ class ServerInfo extends IPSModule
     {
         for ($cnt = 0; $cnt < 2; $cnt++) {
             $device = $this->ReadPropertyString('disk' . $cnt . '_device');
+			if ($device == '')
+				continue;
 
             $res = $this->execute('hddtemp ' . $device);
             if ($res == '' || count($res) < 1) {
