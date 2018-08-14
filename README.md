@@ -32,8 +32,9 @@
 
 #### Ubuntu
 
-``<br>
-``
+`sudo apt-get install hddtemp`<br>
+`sudo chmod u+s /usr/sbin/hddtemp`
+
 ### b. Laden des Moduls
 
 Die Konsole von IP-Symcon öffnen. Im Objektbaum unter Kerninstanzen die Instanz __*Modules*__ durch einen doppelten Mausklick öffnen.
