@@ -69,7 +69,7 @@ class ServerInfo extends IPSModule
         $this->CreateVarProfile('ServerInfo.Frequency', IPS_INTEGER, ' MHz', 0, 0, 0, 0, '');
         $this->CreateVarProfile('ServerInfo.MB', IPS_FLOAT, ' MB', 0, 0, 0, 0, '');
         $this->CreateVarProfile('ServerInfo.GB', IPS_FLOAT, ' GB', 0, 0, 0, 0, '');
-        $this->CreateVarProfile('ServerInfo.Usage', IPS_FLOAT, ' %', 0, 0, 0, 0, '');
+        $this->CreateVarProfile('ServerInfo.Usage', IPS_FLOAT, ' %', 0, 0, 0, 1, '');
         $this->CreateVarProfile('ServerInfo.Duration', IPS_INTEGER, ' sec', 0, 0, 0, 0, '');
         $this->CreateVarProfile('ServerInfo.Temperature', IPS_FLOAT, ' °C', 0, 0, 0, 0, '');
         $this->CreateVarProfile('ServerInfo.Load', IPS_FLOAT, '', 0, 0, 0, 2, '');
@@ -297,8 +297,9 @@ class ServerInfo extends IPSModule
         $Load15m = $r[2];
 
         $s = explode('/', $r[3]);
-        if (count($s) < 4) {
+        if (count($s) < 2) {
             $this->SendDebug(__FUNCTION__, 'bad data: ' . $r[3], 0);
+            return false;
         }
 
         $ProcRunnable = $s[0];
