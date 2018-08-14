@@ -1,10 +1,57 @@
 {
 	"translations": {
 		"de": {
+			"Partitions to be monitored": "zu kontrollierende Partitionen",
+			"1st device": "1. Gerät",
+			"2nd device": "2. Gerät",
+
+			"Disks to be monitored" : "zu kontrollierende Datenträger",
+			"1st device": "1. Gerät",
+			"2nd device": "2. Gerät",
+
 			"Update data every X minutes": "Aktualisiere Daten alle X Minuten",
 			"Minutes": "Minuten",
 
 			"Update data": "Aktualisiere Daten",
+
+			"Hostname": "Hostname",
+
+			"Operating system": "Betriebssystem",
+
+			"Uptime": "Uptime",
+
+			"Load of last 1 min": "Last der letzten Minute",
+			"Load of last 5 min": "Last der letzten 5 Minuten",
+			"Load of last 15 min": "Last der letzten 15 Minuten",
+			"Count of runable processes": "Anzahl der rechenbereiten Prozesse",
+			"Count of all processes": "Gesamtanzahl der Prozesse",
+
+			"Total memory": "gesamter Hauptspeicher",
+			"Free memory": "freier Hauptspeicher",
+			"Available memory": "verfügbarer Hauptspeicher",
+
+			"Model of cpu": "CPU-Modell",
+			"Current cpu-frequency": "aktuelle CPU-Frequenz",
+			"Number of cpu-cores": "Anzahl der CPU-Kerne",
+			"Usage of cpu": "Ausnutzung der CPU(s)",
+
+			"Temperatur of cpu": "CPU-Temperatur",
+			"Temperatur of 1st disk": "Temperatur der 1. Festplatte",
+			"Temperatur of 2nd disk": "Temperatur der 2. Festplatte",
+
+			"Mountpoint of 1st partition": "Verzeichnis der 1. Partition",
+			"Size of 1st partition": "Größe der 1. Partition",
+			"Used space of 1st partition": "Verwendeter Platz der 1. Partition",
+			"Available space of 1st partition": "Verfügbarer Platz der 1. Partition",
+			"Usage of 1st partition": "Ausnutzung der 1. Partition",
+
+			"Mountpoint of 2nd partition": "Verzeichnis der 2. Partition",
+			"Size of 2nd partition": "Größe der 2. Partition",
+			"Used space of 2nd partition": "Verwendeter Platz der 2. Partition",
+			"Available space of 2nd partition": "Verfügbarer Platz der 2. Partition",
+			"Usage of 2nd partition": "Ausnutzung der 2. Partition",
+
+			"Last update": "Letzte Aktualisierung",
 
 			"Instance getting created": "Instanz wird erstellt",
 			"Instance is active": "Instanz ist aktiv",

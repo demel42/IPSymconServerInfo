@@ -77,47 +77,52 @@ class ServerInfo extends IPSModule
 
     public function ApplyChanges()
     {
+		$partition0_device = $this->ReadPropertyString('partition0_device');
+		$partition1_device = $this->ReadPropertyString('partition1_device');
+		$disk0_device = $this->ReadPropertyString('disk0_device');
+		$disk1_device = $this->ReadPropertyString('disk1_device');
+
         parent::ApplyChanges();
 
         $vpos = 0;
         // Hostname
         $this->MaintainVariable('Hostname', $this->Translate('Hostname'), IPS_STRING, '', $vpos++, true);
         // OS-Version
-        $this->MaintainVariable('OsVersion', $this->Translate('OS-Version'), IPS_STRING, '', $vpos++, true);
+        $this->MaintainVariable('OsVersion', $this->Translate('Operating system'), IPS_STRING, '', $vpos++, true);
         // Uptime
         $this->MaintainVariable('Uptime', $this->Translate('Uptime'), IPS_INTEGER, 'ServerInfo.Duration', $vpos++, true);
         $this->MaintainVariable('Uptime_Pretty', $this->Translate('Uptime'), IPS_STRING, '', $vpos++, true);
         // Load
-        $this->MaintainVariable('Load1m', $this->Translate('Load last 1 min'), IPS_FLOAT, 'ServerInfo.Load', $vpos++, true);
-        $this->MaintainVariable('Load5m', $this->Translate('Load last 5 min'), IPS_FLOAT, 'ServerInfo.Load', $vpos++, true);
-        $this->MaintainVariable('Load15m', $this->Translate('Load last 15 min'), IPS_FLOAT, 'ServerInfo.Load', $vpos++, true);
-        $this->MaintainVariable('ProcRunnable', $this->Translate('Count of runnable processes'), IPS_INTEGER, '', $vpos++, true);
+        $this->MaintainVariable('Load1m', $this->Translate('Load of last 1 min'), IPS_FLOAT, 'ServerInfo.Load', $vpos++, true);
+        $this->MaintainVariable('Load5m', $this->Translate('Load of last 5 min'), IPS_FLOAT, 'ServerInfo.Load', $vpos++, true);
+        $this->MaintainVariable('Load15m', $this->Translate('Load of last 15 min'), IPS_FLOAT, 'ServerInfo.Load', $vpos++, true);
+        $this->MaintainVariable('ProcRunnable', $this->Translate('Count of runable processes'), IPS_INTEGER, '', $vpos++, true);
         $this->MaintainVariable('ProcTotal', $this->Translate('Count of all processes'), IPS_INTEGER, '', $vpos++, true);
         // Memory
         $this->MaintainVariable('MemTotal', $this->Translate('Total memory'), IPS_FLOAT, 'ServerInfo.MB', $vpos++, true);
         $this->MaintainVariable('MemFree', $this->Translate('Free memory'), IPS_FLOAT, 'ServerInfo.MB', $vpos++, true);
         $this->MaintainVariable('MemAvailable', $this->Translate('Available memory'), IPS_FLOAT, 'ServerInfo.MB', $vpos++, true);
         // CPU
-        $this->MaintainVariable('CpuModel', $this->Translate('CPU-model'), IPS_STRING, '', $vpos++, true);
+        $this->MaintainVariable('CpuModel', $this->Translate('Model of cpu'), IPS_STRING, '', $vpos++, true);
         $this->MaintainVariable('CpuCurFrequency', $this->Translate('Current cpu-frequency'), IPS_INTEGER, 'ServerInfo.Frequency', $vpos++, true);
-        $this->MaintainVariable('CpuCount', $this->Translate('CPU-Cores'), IPS_INTEGER, '', $vpos++, true);
-        $this->MaintainVariable('CpuUsage', $this->Translate('CPU-usage'), IPS_FLOAT, 'ServerInfo.Usage', $vpos++, true);
+        $this->MaintainVariable('CpuCount', $this->Translate('Number of cpu-cores'), IPS_INTEGER, '', $vpos++, true);
+        $this->MaintainVariable('CpuUsage', $this->Translate('Usage of cpu'), IPS_FLOAT, 'ServerInfo.Usage', $vpos++, true);
         // Temperatur
         $this->MaintainVariable('CpuTemp', $this->Translate('Temperatur of cpu'), IPS_FLOAT, 'ServerInfo.Temperature', $vpos++, true);
-        $this->MaintainVariable('Disk0Temp', $this->Translate('Temperatur of 1st disk'), IPS_FLOAT, 'ServerInfo.Temperature', $vpos++, true);
-        $this->MaintainVariable('Disk1Temp', $this->Translate('Temperatur of 2nd disk'), IPS_FLOAT, 'ServerInfo.Temperature', $vpos++, true);
+        $this->MaintainVariable('Disk0Temp', $this->Translate('Temperatur of 1st disk'), IPS_FLOAT, 'ServerInfo.Temperature', $vpos++, $disk0_device != '');
+        $this->MaintainVariable('Disk1Temp', $this->Translate('Temperatur of 2nd disk'), IPS_FLOAT, 'ServerInfo.Temperature', $vpos++, $disk1_device != '');
         // Partition 0
-        $this->MaintainVariable('Partition0Mountpoint', $this->Translate('Mountpoint of 1st partition'), IPS_STRING, '', $vpos++, true);
-        $this->MaintainVariable('Partition0Size', $this->Translate('Size of 1st partition'), IPS_FLOAT, 'ServerInfo.GB', $vpos++, true);
-        $this->MaintainVariable('Partition0Used', $this->Translate('Used space of 1st partition'), IPS_FLOAT, 'ServerInfo.GB', $vpos++, true);
-        $this->MaintainVariable('Partition0Available', $this->Translate('Available space of 1st partition'), IPS_FLOAT, 'ServerInfo.GB', $vpos++, true);
-        $this->MaintainVariable('Partition0Usage', $this->Translate('Usage of 1st partition'), IPS_FLOAT, 'ServerInfo.Usage', $vpos++, true);
+        $this->MaintainVariable('Partition0Mountpoint', $this->Translate('Mountpoint of 1st partition'), IPS_STRING, '', $vpos++, $partition0_device != '');
+        $this->MaintainVariable('Partition0Size', $this->Translate('Size of 1st partition'), IPS_FLOAT, 'ServerInfo.GB', $vpos++, $partition0_device != '');
+        $this->MaintainVariable('Partition0Used', $this->Translate('Used space of 1st partition'), IPS_FLOAT, 'ServerInfo.GB', $vpos++, $partition0_device != '');
+        $this->MaintainVariable('Partition0Available', $this->Translate('Available space of 1st partition'), IPS_FLOAT, 'ServerInfo.GB', $vpos++, $partition0_device != '');
+        $this->MaintainVariable('Partition0Usage', $this->Translate('Usage of 1st partition'), IPS_FLOAT, 'ServerInfo.Usage', $vpos++, $partition0_device != '');
         // Partition 1
-        $this->MaintainVariable('Partition1Name', $this->Translate('Name of 2nd partition'), IPS_STRING, '', $vpos++, true);
-        $this->MaintainVariable('Partition1Size', $this->Translate('Size of 2nd partition'), IPS_FLOAT, 'ServerInfo.GB', $vpos++, true);
-        $this->MaintainVariable('Partition1Used', $this->Translate('used space of 2nd partition'), IPS_FLOAT, 'ServerInfo.GB', $vpos++, true);
-        $this->MaintainVariable('Partition1Available', $this->Translate('Available space of 2nd partition'), IPS_FLOAT, 'ServerInfo.GB', $vpos++, true);
-        $this->MaintainVariable('Partition1Usage', $this->Translate('Usage of 2nd partition'), IPS_FLOAT, 'ServerInfo.Usage', $vpos++, true);
+        $this->MaintainVariable('Partition1Name', $this->Translate('Name of 2nd partition'), IPS_STRING, '', $vpos++, $partition1_device != '');
+        $this->MaintainVariable('Partition1Size', $this->Translate('Size of 2nd partition'), IPS_FLOAT, 'ServerInfo.GB', $vpos++, $partition1_device != '');
+        $this->MaintainVariable('Partition1Used', $this->Translate('used space of 2nd partition'), IPS_FLOAT, 'ServerInfo.GB', $vpos++, $partition1_device != '');
+        $this->MaintainVariable('Partition1Available', $this->Translate('Available space of 2nd partition'), IPS_FLOAT, 'ServerInfo.GB', $vpos++, $partition1_device != '');
+        $this->MaintainVariable('Partition1Usage', $this->Translate('Usage of 2nd partition'), IPS_FLOAT, 'ServerInfo.Usage', $vpos++, $partition1_device != '');
 
         $this->MaintainVariable('LastUpdate', $this->Translate('Last update'), IPS_INTEGER, '~UnixTimestamp', $vpos++, true);
 
@@ -128,6 +133,15 @@ class ServerInfo extends IPSModule
 
     public function GetConfigurationForm()
     {
+
+		$formElements[] = ['type' => 'Label', 'label' => 'Partitions to be monitored'];
+		$formElements[] = ['type' => 'ValidationTextBox', 'name' => 'partition0_device', 'caption' => '1st device'];
+		$formElements[] = ['type' => 'ValidationTextBox', 'name' => 'partition1_device', 'caption' => '2nd device'];
+
+		$formElements[] = ['type' => 'Label', 'label' => 'Disks to be monitored'];
+		$formElements[] = ['type' => 'ValidationTextBox', 'name' => 'disk0_device', 'caption' => '1st device'];
+		$formElements[] = ['type' => 'ValidationTextBox', 'name' => 'disk1_device', 'caption' => '2nd device'];
+
         $formElements[] = ['type' => 'Label', 'label' => 'Update data every X minutes'];
         $formElements[] = ['type' => 'IntervalBox', 'name' => 'update_interval', 'caption' => 'Minutes'];
 
@@ -161,6 +175,8 @@ class ServerInfo extends IPSModule
         $this->get_hddtemp();
         $this->get_cpuinfo();
         $this->get_cpuload();
+
+		$this->SetValue('LastUpdate', time());
     }
 
     private function execute($cmd)
@@ -356,44 +372,44 @@ class ServerInfo extends IPSModule
 
     private function get_partition()
     {
-        $cnt = 0;
+        for ($cnt = 0; $cnt < 2; $cnt++) {
+			$device = $this->ReadPropertyString('partition' . $cnt . '_device');
 
-        $Partition = '/dev/sda1';
+			$Mountpoint = '';
+			$Size = 0;
+			$Used = 0;
+			$Available = 0;
+			$Usage = 0;
 
-        $Mountpoint = '';
-        $Size = 0;
-        $Used = 0;
-        $Available = 0;
-        $Usage = 0;
+			$res = $this->execute('df');
+			if ($res == '' || count($res) < 1) {
+				$this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+				return false;
+			}
+			foreach ($res as $r) {
+				$s = preg_split("/[\s]+/", $r);
+				if (count($s) < 6) {
+					$this->SendDebug(__FUNCTION__, 'bad data: ' . $r, 0);
+					continue;
+				}
+				if ($s[0] == $device) {
+					$Size = floor($s[1] / (1024 * 1024) * 10) / 10;
+					$Used = floor($s[2] / (1024 * 1024) * 10) / 10;
+					$Available = floor($s[3] / (1024 * 1024) * 10) / 10;
+					if (preg_match('/([\d]*)/', $s[4], $q)) {
+						$Usage = $q[1];
+					}
+					$Mountpoint = $s[5];
+				}
+			}
 
-        $res = $this->execute('df');
-        if ($res == '' || count($res) < 1) {
-            $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
-            return false;
-        }
-        foreach ($res as $r) {
-            $s = preg_split("/[\s]+/", $r);
-            if (count($s) < 6) {
-                $this->SendDebug(__FUNCTION__, 'bad data: ' . $r, 0);
-                continue;
-            }
-            if ($s[0] == $Partition) {
-                $Size = floor($s[1] / (1024 * 1024) * 10) / 10;
-                $Used = floor($s[2] / (1024 * 1024) * 10) / 10;
-                $Available = floor($s[3] / (1024 * 1024) * 10) / 10;
-                if (preg_match('/([\d]*)/', $s[4], $q)) {
-                    $Usage = $q[1];
-                }
-                $Mountpoint = $s[5];
-            }
-        }
-
-        $this->SendDebug(__FUNCTION__, 'partition ' . $cnt . '=' . $Partition . ': size=' . $Size . ' GB, used=' . $Used . ' GB, available=' . $Available . ' GB, ' . $Usage . '%' . ', mountpoint=' . $Mountpoint, 0);
-        $this->SetValue('Partition' . $cnt . 'Mountpoint', $Mountpoint);
-        $this->SetValue('Partition' . $cnt . 'Size', $Size);
-        $this->SetValue('Partition' . $cnt . 'Used', $Used);
-        $this->SetValue('Partition' . $cnt . 'Available', $Available);
-        $this->SetValue('Partition' . $cnt . 'Usage', $Usage);
+			$this->SendDebug(__FUNCTION__, 'partition ' . $cnt . '=' . $device . ': size=' . $Size . ' GB, used=' . $Used . ' GB, available=' . $Available . ' GB, ' . $Usage . '%' . ', mountpoint=' . $Mountpoint, 0);
+			$this->SetValue('Partition' . $cnt . 'Mountpoint', $Mountpoint);
+			$this->SetValue('Partition' . $cnt . 'Size', $Size);
+			$this->SetValue('Partition' . $cnt . 'Used', $Used);
+			$this->SetValue('Partition' . $cnt . 'Available', $Available);
+			$this->SetValue('Partition' . $cnt . 'Usage', $Usage);
+		}
 
         return true;
     }
@@ -429,24 +445,25 @@ class ServerInfo extends IPSModule
 
     private function get_hddtemp()
     {
-        $cnt = 0;
-        $Device = '/dev/sda';
+        for ($cnt = 0; $cnt < 2; $cnt++) {
+			$device = $this->ReadPropertyString('disk' . $cnt . '_device');
 
-        $res = $this->execute('hddtemp ' . $Device);
-        if ($res == '' || count($res) < 1) {
-            $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
-            return false;
-        }
+			$res = $this->execute('hddtemp ' . $device);
+			if ($res == '' || count($res) < 1) {
+				$this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+				return false;
+			}
 
-        $Temp = 0;
+			$Temp = 0;
 
-        $s = preg_split("/[:\s]+/", $res[0]);
-        if (preg_match('/([\d]*)/', $s[2], $q)) {
-            $Temp = $q[1];
-        }
+			$s = preg_split("/[:\s]+/", $res[0]);
+			if (preg_match('/([\d]*)/', $s[2], $q)) {
+				$Temp = $q[1];
+			}
 
-        $this->SendDebug(__FUNCTION__, 'disk' . $cnt . ': Temp=' . $Temp, 0);
-        $this->SetValue('Disk' . $cnt . 'Temp', $Temp);
+			$this->SendDebug(__FUNCTION__, 'disk' . $cnt . '=' . $device . ': Temp=' . $Temp, 0);
+			$this->SetValue('Disk' . $cnt . 'Temp', $Temp);
+		}
 
         return true;
     }

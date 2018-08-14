@@ -16,6 +16,7 @@
 4. [Funktionsreferenz](#4-funktionsreferenz)
 5. [Konfiguration](#5-konfiguration)
 6. [Anhang](#6-anhang)
+7. [Versions-Historie](#7-versions-historie)
 
 ## 1. Funktionsumfang
 
@@ -60,9 +61,14 @@ In IP-Symcon nun _Instanz hinzufügen_ (_CTRL+1_) auswählen unter der Kategorie
 ### Variablen
 
 | Eigenschaft               | Typ      | Standardwert | Beschreibung |
-| :-----------------------: | :-----:  | :----------: | :----------------------------------------------------------------------------------------------------------: |
+| :-----------------------: | :-----:  | :----------: | :-----------------------------------------: |
 | Aktualisiere Daten ...    | integer  | 5            | Aktualisierungsintervall, Angabe in Minuten |
+|                           |          |              |                                             |
+| Gerät für Partition ...   | string   | s.u.         | nur Patitionen mit Dateisystem              |
+| Gerät für Datenträger ... | string   | s.u.         | nur Datenträger mit S.M.A.R.T               |
 
+| Betriebssystem | Partition 1 | Datenträger 1 |
+| Ubuntu         | /dev/sda1   | /dev/sda      |
 
 ## 6. Anhang
 
@@ -71,3 +77,8 @@ GUIDs
 - Modul: `{20AACCAE-F43C-40C2-BECF-DFCCB70558D0}`
 - Instanzen:
   - ServerInfo: `{99B3B506-0808-433A-9745-32CDD63BC307}`
+
+## 7. Versions-Historie
+
+- 1.0 @ 14.08.2018 17:21<br>
+  Initiale Version
