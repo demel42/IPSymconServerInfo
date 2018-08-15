@@ -419,25 +419,24 @@ class ServerInfo extends IPSModule
 
     private function get_cputemp()
     {
-        $res = $this->execute('cat `echo /sys/class/thermal/thermal_zone*/type`');
-        if ($res == '' || count($res) < 1) {
-            $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+		// x86_pkg_temp
+        $res1 = $this->execute('cat `echo /sys/class/thermal/thermal_zone*/type`');
+        if ($res1 == '' || count($res1) < 1) {
+            $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res1, true), 0);
+            return false;
+        }
+		$res2 = $this->execute('cat `echo /sys/class/thermal/thermal_zone*/temp`');
+        if ($res2 == '' || count($res2) < 1) {
+            $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res2, true), 0);
             return false;
         }
 
-        $CpuTemp = 0;
-
-        for ($i = 0; $i < count($res); $i++) {
-            if ($res[$i] == 'x86_pkg_temp') {
-                break;
-            }
-        }
-        if ($i < count($res)) {
-            $res = $this->execute('cat /sys/class/thermal/thermal_zone' . $i . '/temp');
-            if ($res == '' || count($res) < 1) {
-                $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
-            }
-            $CpuTemp = floor($res[0] / 1000);
+		$CpuTemp = 0;
+        for ($i = 0; $i < min(count($res1), count($res2)); $i++) {
+            $t = floor($res2[$i] / 1000);
+			$this->SendDebug(__FUNCTION__, ' ... type=' . $res1[$i] . ', temp=' . $t, 0);
+			if ($t > $CpuTemp)
+				$CpuTemp = $t;
         }
 
         $this->SendDebug(__FUNCTION__, 'CpuTemp=' . $CpuTemp, 0);

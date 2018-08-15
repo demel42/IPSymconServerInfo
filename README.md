@@ -81,5 +81,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 1.1 @ 15.08.2018 16:03<br>
+  CPU-Temperatur/Ubuntu: da die Ermittlung der Temperatur aus /sys/class/thermal/thermal_zone Hardware-abhängig ist, wird nun die höchste der dort ausgelesenen Temperaturen verwendet.
+  Das ist zwar nicht unbedingt "die" CPU-Temperatur, aber besser etwas zu hoch angegeben als zu niedirg.
+
 - 1.0 @ 14.08.2018 17:21<br>
   Initiale Version
