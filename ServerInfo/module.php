@@ -57,9 +57,9 @@ class ServerInfo extends IPSModule
     {
         parent::Create();
 
-        $this->RegisterPropertyString('partition0_device', '/dev/sda1');
+        $this->RegisterPropertyString('partition0_device', '');
         $this->RegisterPropertyString('partition1_device', '');
-        $this->RegisterPropertyString('disk0_device', '/dev/sda');
+        $this->RegisterPropertyString('disk0_device', '');
         $this->RegisterPropertyString('disk1_device', '');
 
         $this->RegisterPropertyInteger('update_interval', '0');
