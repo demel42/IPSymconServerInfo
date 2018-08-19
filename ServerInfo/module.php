@@ -27,11 +27,11 @@ if (@constant('IPS_BASE') == null) {
 
 if (!defined('vtBoolean')) {
     define('vtBoolean', 0);
-	define('vtInteger', 1);
-	define('vtFloat', 2);
-	define('vtString', 3);
-	define('vtArray', 8);
-	define('vtObject', 9);
+    define('vtInteger', 1);
+    define('vtFloat', 2);
+    define('vtString', 3);
+    define('vtArray', 8);
+    define('vtObject', 9);
 }
 
 if (!defined('otCategory')) {
@@ -43,7 +43,6 @@ if (!defined('otCategory')) {
     define('otMedia', 5);
     define('otLink', 6);
 }
-
 
 // Betriebssystem
 if (!defined('OS_NONE')) {
