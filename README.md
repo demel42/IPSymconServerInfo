@@ -1,7 +1,7 @@
 # IPSymconServerInfo
 
 [![IPS-Version](https://img.shields.io/badge/Symcon_Version-4.4+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-![Module-Version](https://img.shields.io/badge/Modul_Version-1.0-blue.svg)
+![Module-Version](https://img.shields.io/badge/Modul_Version-1.2-blue.svg)
 ![Code](https://img.shields.io/badge/Code-PHP-blue.svg)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![StyleCI](https://github.styleci.io/repos/126683101/shield?branch=master)](https://github.styleci.io/repos/144562617)
@@ -80,6 +80,10 @@ GUIDs
   - ServerInfo: `{99B3B506-0808-433A-9745-32CDD63BC307}`
 
 ## 7. Versions-Historie
+
+- 1.2 @ 19.08.2018 12:01<br>
+  define's der Variablentypen,
+  Schaltfläche mit Link zu README.md im Konfigurationsdialog
 
 - 1.1 @ 15.08.2018 16:03<br>
   CPU-Temperatur/Ubuntu: da die Ermittlung der Temperatur aus /sys/class/thermal/thermal_zone Hardware-abhängig ist, wird nun die höchste der dort ausgelesenen Temperaturen verwendet.
