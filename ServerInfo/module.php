@@ -34,16 +34,6 @@ if (!defined('vtBoolean')) {
     define('vtObject', 9);
 }
 
-if (!defined('otCategory')) {
-    define('otCategory', 0);
-    define('otInstance', 1);
-    define('otVariable', 2);
-    define('otScript', 3);
-    define('otEvent', 4);
-    define('otMedia', 5);
-    define('otLink', 6);
-}
-
 // Betriebssystem
 if (!defined('OS_NONE')) {
     define('OS_NONE', 0);
