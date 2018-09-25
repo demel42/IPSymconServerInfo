@@ -187,7 +187,7 @@ class ServerInfo extends IPSModule
 
         $time_start = microtime(true);
         $data = exec($cmd, $output, $exitcode);
-        $duration = floor((microtime(true) - $time_start) * 100) / 100;
+        $duration = round(microtime(true) - $time_start, 2);
 
         if ($exitcode) {
             $ok = false;
