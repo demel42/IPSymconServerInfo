@@ -30,8 +30,6 @@ if (!defined('VARIABLETYPE_BOOLEAN')) {
     define('VARIABLETYPE_INTEGER', 1);
     define('VARIABLETYPE_FLOAT', 2);
     define('VARIABLETYPE_STRING', 3);
-    define('vtArray', 8);
-    define('vtObject', 9);
 }
 
 // Betriebssystem
