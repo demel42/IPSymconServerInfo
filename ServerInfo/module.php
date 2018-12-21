@@ -25,11 +25,11 @@ if (@constant('IPS_BASE') == null) {
     define('KL_CUSTOM', IPS_LOGMESSAGE + 7);			// User Message
 }
 
-if (!defined('vtBoolean')) {
-    define('vtBoolean', 0);
-    define('vtInteger', 1);
-    define('vtFloat', 2);
-    define('vtString', 3);
+if (!defined('VARIABLETYPE_BOOLEAN')) {
+    define('VARIABLETYPE_BOOLEAN', 0);
+    define('VARIABLETYPE_INTEGER', 1);
+    define('VARIABLETYPE_FLOAT', 2);
+    define('VARIABLETYPE_STRING', 3);
     define('vtArray', 8);
     define('vtObject', 9);
 }
@@ -62,13 +62,13 @@ class ServerInfo extends IPSModule
 
         $this->RegisterTimer('UpdateData', 0, 'ServerInfo_UpdateData(' . $this->InstanceID . ');');
 
-        $this->CreateVarProfile('ServerInfo.Frequency', vtInteger, ' MHz', 0, 0, 0, 0, '');
-        $this->CreateVarProfile('ServerInfo.MB', vtFloat, ' MB', 0, 0, 0, 0, '');
-        $this->CreateVarProfile('ServerInfo.GB', vtFloat, ' GB', 0, 0, 0, 0, '');
-        $this->CreateVarProfile('ServerInfo.Usage', vtFloat, ' %', 0, 0, 0, 1, '');
-        $this->CreateVarProfile('ServerInfo.Duration', vtInteger, ' sec', 0, 0, 0, 0, '');
-        $this->CreateVarProfile('ServerInfo.Temperature', vtFloat, ' °C', 0, 0, 0, 0, '');
-        $this->CreateVarProfile('ServerInfo.Load', vtFloat, '', 0, 0, 0, 2, '');
+        $this->CreateVarProfile('ServerInfo.Frequency', VARIABLETYPE_INTEGER, ' MHz', 0, 0, 0, 0, '');
+        $this->CreateVarProfile('ServerInfo.MB', VARIABLETYPE_FLOAT, ' MB', 0, 0, 0, 0, '');
+        $this->CreateVarProfile('ServerInfo.GB', VARIABLETYPE_FLOAT, ' GB', 0, 0, 0, 0, '');
+        $this->CreateVarProfile('ServerInfo.Usage', VARIABLETYPE_FLOAT, ' %', 0, 0, 0, 1, '');
+        $this->CreateVarProfile('ServerInfo.Duration', VARIABLETYPE_INTEGER, ' sec', 0, 0, 0, 0, '');
+        $this->CreateVarProfile('ServerInfo.Temperature', VARIABLETYPE_FLOAT, ' °C', 0, 0, 0, 0, '');
+        $this->CreateVarProfile('ServerInfo.Load', VARIABLETYPE_FLOAT, '', 0, 0, 0, 2, '');
     }
 
     public function ApplyChanges()
@@ -82,45 +82,45 @@ class ServerInfo extends IPSModule
 
         $vpos = 0;
         // Hostname
-        $this->MaintainVariable('Hostname', $this->Translate('Hostname'), vtString, '', $vpos++, true);
+        $this->MaintainVariable('Hostname', $this->Translate('Hostname'), VARIABLETYPE_STRING, '', $vpos++, true);
         // OS-Version
-        $this->MaintainVariable('OsVersion', $this->Translate('Operating system'), vtString, '', $vpos++, true);
+        $this->MaintainVariable('OsVersion', $this->Translate('Operating system'), VARIABLETYPE_STRING, '', $vpos++, true);
         // Uptime
-        $this->MaintainVariable('Uptime', $this->Translate('Uptime'), vtInteger, 'ServerInfo.Duration', $vpos++, true);
-        $this->MaintainVariable('Uptime_Pretty', $this->Translate('Uptime'), vtString, '', $vpos++, true);
+        $this->MaintainVariable('Uptime', $this->Translate('Uptime'), VARIABLETYPE_INTEGER, 'ServerInfo.Duration', $vpos++, true);
+        $this->MaintainVariable('Uptime_Pretty', $this->Translate('Uptime'), VARIABLETYPE_STRING, '', $vpos++, true);
         // Load
-        $this->MaintainVariable('Load1m', $this->Translate('Load of last 1 min'), vtFloat, 'ServerInfo.Load', $vpos++, true);
-        $this->MaintainVariable('Load5m', $this->Translate('Load of last 5 min'), vtFloat, 'ServerInfo.Load', $vpos++, true);
-        $this->MaintainVariable('Load15m', $this->Translate('Load of last 15 min'), vtFloat, 'ServerInfo.Load', $vpos++, true);
-        $this->MaintainVariable('ProcRunnable', $this->Translate('Count of runable processes'), vtInteger, '', $vpos++, true);
-        $this->MaintainVariable('ProcTotal', $this->Translate('Count of all processes'), vtInteger, '', $vpos++, true);
+        $this->MaintainVariable('Load1m', $this->Translate('Load of last 1 min'), VARIABLETYPE_FLOAT, 'ServerInfo.Load', $vpos++, true);
+        $this->MaintainVariable('Load5m', $this->Translate('Load of last 5 min'), VARIABLETYPE_FLOAT, 'ServerInfo.Load', $vpos++, true);
+        $this->MaintainVariable('Load15m', $this->Translate('Load of last 15 min'), VARIABLETYPE_FLOAT, 'ServerInfo.Load', $vpos++, true);
+        $this->MaintainVariable('ProcRunnable', $this->Translate('Count of runable processes'), VARIABLETYPE_INTEGER, '', $vpos++, true);
+        $this->MaintainVariable('ProcTotal', $this->Translate('Count of all processes'), VARIABLETYPE_INTEGER, '', $vpos++, true);
         // Memory
-        $this->MaintainVariable('MemTotal', $this->Translate('Total memory'), vtFloat, 'ServerInfo.MB', $vpos++, true);
-        $this->MaintainVariable('MemFree', $this->Translate('Free memory'), vtFloat, 'ServerInfo.MB', $vpos++, true);
-        $this->MaintainVariable('MemAvailable', $this->Translate('Available memory'), vtFloat, 'ServerInfo.MB', $vpos++, true);
+        $this->MaintainVariable('MemTotal', $this->Translate('Total memory'), VARIABLETYPE_FLOAT, 'ServerInfo.MB', $vpos++, true);
+        $this->MaintainVariable('MemFree', $this->Translate('Free memory'), VARIABLETYPE_FLOAT, 'ServerInfo.MB', $vpos++, true);
+        $this->MaintainVariable('MemAvailable', $this->Translate('Available memory'), VARIABLETYPE_FLOAT, 'ServerInfo.MB', $vpos++, true);
         // CPU
-        $this->MaintainVariable('CpuModel', $this->Translate('Model of cpu'), vtString, '', $vpos++, true);
-        $this->MaintainVariable('CpuCurFrequency', $this->Translate('Current cpu-frequency'), vtInteger, 'ServerInfo.Frequency', $vpos++, true);
-        $this->MaintainVariable('CpuCount', $this->Translate('Number of cpu-cores'), vtInteger, '', $vpos++, true);
-        $this->MaintainVariable('CpuUsage', $this->Translate('Usage of cpu'), vtFloat, 'ServerInfo.Usage', $vpos++, true);
+        $this->MaintainVariable('CpuModel', $this->Translate('Model of cpu'), VARIABLETYPE_STRING, '', $vpos++, true);
+        $this->MaintainVariable('CpuCurFrequency', $this->Translate('Current cpu-frequency'), VARIABLETYPE_INTEGER, 'ServerInfo.Frequency', $vpos++, true);
+        $this->MaintainVariable('CpuCount', $this->Translate('Number of cpu-cores'), VARIABLETYPE_INTEGER, '', $vpos++, true);
+        $this->MaintainVariable('CpuUsage', $this->Translate('Usage of cpu'), VARIABLETYPE_FLOAT, 'ServerInfo.Usage', $vpos++, true);
         // Temperatur
-        $this->MaintainVariable('CpuTemp', $this->Translate('Temperatur of cpu'), vtFloat, 'ServerInfo.Temperature', $vpos++, true);
-        $this->MaintainVariable('Disk0Temp', $this->Translate('Temperatur of 1st disk'), vtFloat, 'ServerInfo.Temperature', $vpos++, $disk0_device != '');
-        $this->MaintainVariable('Disk1Temp', $this->Translate('Temperatur of 2nd disk'), vtFloat, 'ServerInfo.Temperature', $vpos++, $disk1_device != '');
+        $this->MaintainVariable('CpuTemp', $this->Translate('Temperatur of cpu'), VARIABLETYPE_FLOAT, 'ServerInfo.Temperature', $vpos++, true);
+        $this->MaintainVariable('Disk0Temp', $this->Translate('Temperatur of 1st disk'), VARIABLETYPE_FLOAT, 'ServerInfo.Temperature', $vpos++, $disk0_device != '');
+        $this->MaintainVariable('Disk1Temp', $this->Translate('Temperatur of 2nd disk'), VARIABLETYPE_FLOAT, 'ServerInfo.Temperature', $vpos++, $disk1_device != '');
         // Partition 0
-        $this->MaintainVariable('Partition0Mountpoint', $this->Translate('Mountpoint of 1st partition'), vtString, '', $vpos++, $partition0_device != '');
-        $this->MaintainVariable('Partition0Size', $this->Translate('Size of 1st partition'), vtFloat, 'ServerInfo.GB', $vpos++, $partition0_device != '');
-        $this->MaintainVariable('Partition0Used', $this->Translate('Used space of 1st partition'), vtFloat, 'ServerInfo.GB', $vpos++, $partition0_device != '');
-        $this->MaintainVariable('Partition0Available', $this->Translate('Available space of 1st partition'), vtFloat, 'ServerInfo.GB', $vpos++, $partition0_device != '');
-        $this->MaintainVariable('Partition0Usage', $this->Translate('Usage of 1st partition'), vtFloat, 'ServerInfo.Usage', $vpos++, $partition0_device != '');
+        $this->MaintainVariable('Partition0Mountpoint', $this->Translate('Mountpoint of 1st partition'), VARIABLETYPE_STRING, '', $vpos++, $partition0_device != '');
+        $this->MaintainVariable('Partition0Size', $this->Translate('Size of 1st partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition0_device != '');
+        $this->MaintainVariable('Partition0Used', $this->Translate('Used space of 1st partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition0_device != '');
+        $this->MaintainVariable('Partition0Available', $this->Translate('Available space of 1st partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition0_device != '');
+        $this->MaintainVariable('Partition0Usage', $this->Translate('Usage of 1st partition'), VARIABLETYPE_FLOAT, 'ServerInfo.Usage', $vpos++, $partition0_device != '');
         // Partition 1
-        $this->MaintainVariable('Partition1Name', $this->Translate('Name of 2nd partition'), vtString, '', $vpos++, $partition1_device != '');
-        $this->MaintainVariable('Partition1Size', $this->Translate('Size of 2nd partition'), vtFloat, 'ServerInfo.GB', $vpos++, $partition1_device != '');
-        $this->MaintainVariable('Partition1Used', $this->Translate('used space of 2nd partition'), vtFloat, 'ServerInfo.GB', $vpos++, $partition1_device != '');
-        $this->MaintainVariable('Partition1Available', $this->Translate('Available space of 2nd partition'), vtFloat, 'ServerInfo.GB', $vpos++, $partition1_device != '');
-        $this->MaintainVariable('Partition1Usage', $this->Translate('Usage of 2nd partition'), vtFloat, 'ServerInfo.Usage', $vpos++, $partition1_device != '');
+        $this->MaintainVariable('Partition1Name', $this->Translate('Name of 2nd partition'), VARIABLETYPE_STRING, '', $vpos++, $partition1_device != '');
+        $this->MaintainVariable('Partition1Size', $this->Translate('Size of 2nd partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition1_device != '');
+        $this->MaintainVariable('Partition1Used', $this->Translate('used space of 2nd partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition1_device != '');
+        $this->MaintainVariable('Partition1Available', $this->Translate('Available space of 2nd partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition1_device != '');
+        $this->MaintainVariable('Partition1Usage', $this->Translate('Usage of 2nd partition'), VARIABLETYPE_FLOAT, 'ServerInfo.Usage', $vpos++, $partition1_device != '');
 
-        $this->MaintainVariable('LastUpdate', $this->Translate('Last update'), vtInteger, '~UnixTimestamp', $vpos++, true);
+        $this->MaintainVariable('LastUpdate', $this->Translate('Last update'), VARIABLETYPE_INTEGER, '~UnixTimestamp', $vpos++, true);
 
         $this->SetStatus(102);
 
