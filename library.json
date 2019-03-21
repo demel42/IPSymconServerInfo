@@ -4,9 +4,9 @@
 	"name": "IPSymconServerInfo",
 	"url": "https://github.com/demel42/IPSymconServerInfo",
 	"compatibility": {
-		"version": "4.4"
+		"version": "5.0"
 	},
-	"version": "1.3",
+	"version": "1.4",
 	"build": 0,
-	"date": 1545394242
+	"date": 1553184283
 }

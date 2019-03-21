@@ -1,7 +1,7 @@
 # IPSymconServerInfo
 
-[![IPS-Version](https://img.shields.io/badge/Symcon_Version-4.4+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-![Module-Version](https://img.shields.io/badge/Modul_Version-1.3-blue.svg)
+[![IPS-Version](https://img.shields.io/badge/Symcon_Version-5.0+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
+![Module-Version](https://img.shields.io/badge/Modul_Version-1.4-blue.svg)
 ![Code](https://img.shields.io/badge/Code-PHP-blue.svg)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![StyleCI](https://github.styleci.io/repos/126683101/shield?branch=master)](https://github.styleci.io/repos/144562617)
@@ -22,7 +22,8 @@
 
 ## 2. Voraussetzungen
 
- - IP-Symcon ab Version 4.4
+ - IP-Symcon ab Version 5<br>
+   Version 4.4 mit Branch _ips_4.4_ (nur noch Fehlerkorrekturen)
 
 ## 3. Installation
 
@@ -63,6 +64,8 @@ In IP-Symcon nun _Instanz hinzufügen_ (_CTRL+1_) auswählen unter der Kategorie
 
 | Eigenschaft               | Typ      | Standardwert | Beschreibung |
 | :-----------------------: | :-----:  | :----------: | :-----------------------------------------: |
+| Instanz ist deaktiviert   | boolean  | false        | Instanz temporär deaktivieren |
+|                           |          |              | |
 | Aktualisiere Daten ...    | integer  | 5            | Aktualisierungsintervall, Angabe in Minuten |
 |                           |          |              |                                             |
 | Gerät für Partition ...   | string   | s.u.         | nur Patitionen mit Dateisystem              |
@@ -80,6 +83,11 @@ GUIDs
   - ServerInfo: `{99B3B506-0808-433A-9745-32CDD63BC307}`
 
 ## 7. Versions-Historie
+
+- 1.4 @ 21.03.2019 17:04<br>
+  - Anpassungen IPS 5, Abspaltung von Branch _ips_4.4_
+  - Schalter, um ein Modul (temporär) zu deaktivieren
+  - Konfigurations-Element IntervalBox -> NumberSpinner
 
 - 1.3 @ 21.12.2018 13:10<br>
   - Standard-Konstanten verwenden
