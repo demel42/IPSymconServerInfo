@@ -17,11 +17,7 @@ trait ServerInfoCommon
             return;
         }
 
-        if (IPS_GetKernelVersion() >= 5) {
-            $ret = parent::SetValue($Ident, $Value);
-        } else {
-            $ret = SetValue($varID, $Value);
-        }
+		$ret = parent::SetValue($Ident, $Value);
         if ($ret == false) {
             $this->SendDebug(__FUNCTION__, 'mismatch of value "' . $Value . '" for variable ' . $Ident, 0);
         }
@@ -35,12 +31,7 @@ trait ServerInfoCommon
             return false;
         }
 
-        if (IPS_GetKernelVersion() >= 5) {
-            $ret = parent::GetValue($Ident);
-        } else {
-            $ret = GetValue($varID);
-        }
-
+		$ret = parent::GetValue($Ident);
         return $ret;
     }
 
@@ -104,40 +95,6 @@ trait ServerInfoCommon
             }
         }
         return 'text/plain';
-    }
-
-    protected function LogMessage($Message, $Severity)
-    {
-        if (IPS_GetKernelVersion() >= 5) {
-            switch ($Severity) {
-                case KL_NOTIFY:
-                case KL_WARNING:
-                case KL_ERROR:
-                case KL_DEBUG:
-                    parent::LogMessage($Message, $Severity);
-                    break;
-                default:
-                    echo __CLASS__ . '::' . __FUNCTION__ . ': unknown severity ' . $Severity;
-                    break;
-            }
-        } else {
-            switch ($Severity) {
-                case KL_NOTIFY:
-                    IPS_LogMessage(__CLASS__ . '::' . __FUNCTION__, 'INFO: ' . $Message);
-                    break;
-                case KL_WARNING:
-                    IPS_LogMessage(__CLASS__ . '::' . __FUNCTION__, 'WARNUNG: ' . $Message);
-                    break;
-                case KL_ERROR:
-                    echo $Message;
-                    break;
-                case KL_DEBUG:
-                    break;
-                default:
-                    echo __CLASS__ . '::' . __FUNCTION__ . ': unknown severity ' . $Severity;
-                    break;
-            }
-        }
     }
 
     private function GetArrayElem($data, $var, $dflt)
