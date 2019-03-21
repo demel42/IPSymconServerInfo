@@ -81,6 +81,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 1.3.1 @ 21.03.2019 17:04<br>
+  - Abspaltung von Branch _ips_4.4_
+
 - 1.3 @ 21.12.2018 13:10<br>
   - Standard-Konstanten verwenden
 
