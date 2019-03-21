@@ -21,7 +21,7 @@ class ServerInfo extends IPSModule
     {
         parent::Create();
 
-		$this->RegisterPropertyBoolean('module_disable', false);
+        $this->RegisterPropertyBoolean('module_disable', false);
 
         $this->RegisterPropertyString('partition0_device', '');
         $this->RegisterPropertyString('partition1_device', '');
@@ -92,12 +92,12 @@ class ServerInfo extends IPSModule
 
         $this->MaintainVariable('LastUpdate', $this->Translate('Last update'), VARIABLETYPE_INTEGER, '~UnixTimestamp', $vpos++, true);
 
-		$module_disable = $this->ReadPropertyBoolean('module_disable');
-		if ($module_disable) {
-			$this->SetTimerInterval('UpdateData', 0);
-			$this->SetStatus(IS_INACTIVE);
-			return;
-		}
+        $module_disable = $this->ReadPropertyBoolean('module_disable');
+        if ($module_disable) {
+            $this->SetTimerInterval('UpdateData', 0);
+            $this->SetStatus(IS_INACTIVE);
+            return;
+        }
 
         $this->SetStatus(IS_ACTIVE);
 
@@ -106,7 +106,7 @@ class ServerInfo extends IPSModule
 
     public function GetConfigurationForm()
     {
-		$formElements[] = ['type' => 'CheckBox', 'name' => 'module_disable', 'caption' => 'Instance is disabled'];
+        $formElements[] = ['type' => 'CheckBox', 'name' => 'module_disable', 'caption' => 'Instance is disabled'];
         $formElements[] = ['type' => 'Label', 'label' => 'Partitions to be monitored'];
         $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'partition0_device', 'caption' => '1st device'];
         $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'partition1_device', 'caption' => '2nd device'];
@@ -129,11 +129,11 @@ class ServerInfo extends IPSModule
                         ];
 
         $formStatus = [];
-		$formStatus[] = ['code' => IS_CREATING, 'icon' => 'inactive', 'caption' => 'Instance getting created'];
-		$formStatus[] = ['code' => IS_ACTIVE, 'icon' => 'active', 'caption' => 'Instance is active'];
-		$formStatus[] = ['code' => IS_DELETING, 'icon' => 'inactive', 'caption' => 'Instance is deleted'];
-		$formStatus[] = ['code' => IS_INACTIVE, 'icon' => 'inactive', 'caption' => 'Instance is inactive'];
-		$formStatus[] = ['code' => IS_NOTCREATED, 'icon' => 'inactive', 'caption' => 'Instance is not created'];
+        $formStatus[] = ['code' => IS_CREATING, 'icon' => 'inactive', 'caption' => 'Instance getting created'];
+        $formStatus[] = ['code' => IS_ACTIVE, 'icon' => 'active', 'caption' => 'Instance is active'];
+        $formStatus[] = ['code' => IS_DELETING, 'icon' => 'inactive', 'caption' => 'Instance is deleted'];
+        $formStatus[] = ['code' => IS_INACTIVE, 'icon' => 'inactive', 'caption' => 'Instance is inactive'];
+        $formStatus[] = ['code' => IS_NOTCREATED, 'icon' => 'inactive', 'caption' => 'Instance is not created'];
 
         return json_encode(['elements' => $formElements, 'actions' => $formActions, 'status' => $formStatus]);
     }
@@ -147,11 +147,11 @@ class ServerInfo extends IPSModule
 
     public function UpdateData()
     {
-		$inst = IPS_GetInstance($this->InstanceID);
-		if ($inst['InstanceStatus'] == IS_INACTIVE) {
-			$this->SendDebug(__FUNCTION__, 'instance is inactive, skip', 0);
-			return;
-		}
+        $inst = IPS_GetInstance($this->InstanceID);
+        if ($inst['InstanceStatus'] == IS_INACTIVE) {
+            $this->SendDebug(__FUNCTION__, 'instance is inactive, skip', 0);
+            return;
+        }
 
         $this->get_hostname();
         $this->get_version();
