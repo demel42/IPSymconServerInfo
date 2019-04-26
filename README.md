@@ -62,14 +62,14 @@ In IP-Symcon nun _Instanz hinzufügen_ (_CTRL+1_) auswählen unter der Kategorie
 
 ### Variablen
 
-| Eigenschaft               | Typ      | Standardwert | Beschreibung |
-| :-----------------------: | :-----:  | :----------: | :-----------------------------------------: |
-| Instanz ist deaktiviert   | boolean  | false        | Instanz temporär deaktivieren |
-|                           |          |              | |
-| Aktualisiere Daten ...    | integer  | 5            | Aktualisierungsintervall, Angabe in Minuten |
-|                           |          |              |                                             |
-| Gerät für Partition ...   | string   | s.u.         | nur Patitionen mit Dateisystem              |
-| Gerät für Datenträger ... | string   | s.u.         | nur Datenträger mit S.M.A.R.T               |
+| Eigenschaft               | Typ     | Standardwert | Beschreibung |
+| :------------------------ | :------ | :----------- | :----------- |
+| Instanz ist deaktiviert   | boolean | false        | Instanz temporär deaktivieren |
+|                           |         |              | |
+| Aktualisiere Daten ...    | integer | 5            | Aktualisierungsintervall, Angabe in Minuten |
+|                           |         |              | |
+| Gerät für Partition ...   | string  | s.u.         | nur Patitionen mit Dateisystem |
+| Gerät für Datenträger ... | string  | s.u.         | nur Datenträger mit S.M.A.R.T |
 
 | Betriebssystem | Partition 1 | Datenträger 1 |
 | Ubuntu         | /dev/sda1   | /dev/sda      |
