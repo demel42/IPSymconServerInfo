@@ -20,6 +20,8 @@
 
 ## 1. Funktionsumfang
 
+Abrufen von Betriebssystem-Informationen.
+
 ## 2. Voraussetzungen
 
  - IP-Symcon ab Version 5<br>
