@@ -7,6 +7,10 @@ if (!defined('VARIABLETYPE_BOOLEAN')) {
     define('VARIABLETYPE_STRING', 3);
 }
 
+if (!defined('IS_INVALIDPREREQUISITES')) {
+    define('IS_INVALIDPREREQUISITES', IS_EBASE + 1);
+}
+
 trait ServerInfoCommon
 {
     protected function SetValue($Ident, $Value)

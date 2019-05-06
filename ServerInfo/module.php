@@ -41,6 +41,28 @@ class ServerInfo extends IPSModule
         $this->CreateVarProfile('ServerInfo.Load', VARIABLETYPE_FLOAT, '', 0, 0, 0, 2, '');
     }
 
+	private function CheckPrerequisites()
+	{
+		$s = '';
+		$r = [];
+
+		$sys = IPS_GetKernelPlatform();
+		if (!in_array($sys, ['Ubuntu', 'Raspberry Pi'])) {
+			$r[] = $this->Translate('supported OS');
+		}
+
+		$data = exec('hddtemp --version 2>&1', $output, $exitcode);
+		if ($exitcode != 0) {
+			$r[] = 'hddtemp';
+		}
+
+		if ($r != []) {
+			$s = $this->Translate('The following system prerequisites are missing') . ': ' . implode (', ', $r);
+		}
+
+		return $s;
+	}
+
     public function ApplyChanges()
     {
         $partition0_device = $this->ReadPropertyString('partition0_device');
@@ -92,6 +114,12 @@ class ServerInfo extends IPSModule
 
         $this->MaintainVariable('LastUpdate', $this->Translate('Last update'), VARIABLETYPE_INTEGER, '~UnixTimestamp', $vpos++, true);
 
+		$s = $this->CheckPrerequisites();
+		if ($s != '') {
+			$this->SetStatus(IS_INVALIDPREREQUISITES);
+			return;
+		}
+
         $module_disable = $this->ReadPropertyBoolean('module_disable');
         if ($module_disable) {
             $this->SetTimerInterval('UpdateData', 0);
@@ -100,27 +128,34 @@ class ServerInfo extends IPSModule
         }
 
         $this->SetStatus(IS_ACTIVE);
-
         $this->SetUpdateInterval();
     }
 
     public function GetConfigurationForm()
     {
-        $formElements[] = ['type' => 'CheckBox', 'name' => 'module_disable', 'caption' => 'Instance is disabled'];
-        $formElements[] = ['type' => 'Label', 'label' => 'Partitions to be monitored'];
-        $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'partition0_device', 'caption' => '1st device'];
-        $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'partition1_device', 'caption' => '2nd device'];
+		$s = $this->CheckPrerequisites();
 
-        $formElements[] = ['type' => 'Label', 'label' => 'Disks to be monitored'];
-        $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'disk0_device', 'caption' => '1st device'];
-        $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'disk1_device', 'caption' => '2nd device'];
+		$formElements = [];
+		if ($s == '') {
+			$formElements[] = ['type' => 'CheckBox', 'name' => 'module_disable', 'caption' => 'Instance is disabled'];
+			$formElements[] = ['type' => 'Label', 'label' => 'Partitions to be monitored'];
+			$formElements[] = ['type' => 'ValidationTextBox', 'name' => 'partition0_device', 'caption' => '1st device'];
+			$formElements[] = ['type' => 'ValidationTextBox', 'name' => 'partition1_device', 'caption' => '2nd device'];
 
-        $formElements[] = ['type' => 'Label', 'label' => 'Update data every X minutes'];
-        $formElements[] = ['type' => 'IntervalBox', 'name' => 'update_interval', 'caption' => 'Minutes'];
+			$formElements[] = ['type' => 'Label', 'label' => 'Disks to be monitored'];
+			$formElements[] = ['type' => 'ValidationTextBox', 'name' => 'disk0_device', 'caption' => '1st device'];
+			$formElements[] = ['type' => 'ValidationTextBox', 'name' => 'disk1_device', 'caption' => '2nd device'];
 
-        $formActions = [];
-        $formActions[] = ['type' => 'Button', 'label' => 'Update data', 'onClick' => 'ServerInfo_UpdateData($id);'];
+			$formElements[] = ['type' => 'Label', 'label' => 'Update data every X minutes'];
+			$formElements[] = ['type' => 'IntervalBox', 'name' => 'update_interval', 'caption' => 'Minutes'];
+		} else {
+			$formElements[] = ['type' => 'Label', 'label' => $s];
+		}
 
+		$formActions = [];
+		if ($s == '') {
+			$formActions[] = ['type' => 'Button', 'label' => 'Update data', 'onClick' => 'ServerInfo_UpdateData($id);'];
+		}
         $formActions[] = ['type' => 'Label', 'label' => '____________________________________________________________________________________________________'];
         $formActions[] = [
                             'type'    => 'Button',
@@ -134,6 +169,8 @@ class ServerInfo extends IPSModule
         $formStatus[] = ['code' => IS_DELETING, 'icon' => 'inactive', 'caption' => 'Instance is deleted'];
         $formStatus[] = ['code' => IS_INACTIVE, 'icon' => 'inactive', 'caption' => 'Instance is inactive'];
         $formStatus[] = ['code' => IS_NOTCREATED, 'icon' => 'inactive', 'caption' => 'Instance is not created'];
+
+		$formStatus[] = ['code' => IS_INVALIDPREREQUISITES, 'icon' => 'error', 'caption' => 'Instance is inactive (invalid preconditions)'];
 
         return json_encode(['elements' => $formElements, 'actions' => $formActions, 'status' => $formStatus]);
     }

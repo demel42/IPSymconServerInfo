@@ -17,6 +17,9 @@
 			"Update data": "Aktualisiere Daten",
 			"Module description": "Modulbeschreibung",
 
+			"The following system prerequisites are missing": "Folgende Systemvoraussetzungen fehlen",
+			"supported OS": "unterstütztes Betriebsystem",
+
 			"Hostname": "Hostname",
 
 			"Operating system": "Betriebssystem",
@@ -58,7 +61,11 @@
 
 			"Instance getting created": "Instanz wird erstellt",
 			"Instance is active": "Instanz ist aktiv",
-			"Instance is inactive": "Instanz ist inaktiv"
+			"Instance is deleted": "Instanz wird gelöscht",
+			"Instance is inactive": "Instanz ist inaktiv",
+			"Instance is not created": "Instanz wurde nicht erzeugt",
+
+			"Instance is inactive (invalid preconditions)": "Instanz ist inaktiv (ungültige Voraussetzungen)"
 		}
 	}
 }

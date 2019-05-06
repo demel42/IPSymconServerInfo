@@ -1,7 +1,7 @@
 # IPSymconServerInfo
 
 [![IPS-Version](https://img.shields.io/badge/Symcon_Version-5.0+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-![Module-Version](https://img.shields.io/badge/Modul_Version-1.5-blue.svg)
+![Module-Version](https://img.shields.io/badge/Modul_Version-1.6-blue.svg)
 ![Code](https://img.shields.io/badge/Code-PHP-blue.svg)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![StyleCI](https://github.styleci.io/repos/126683101/shield?branch=master)](https://github.styleci.io/repos/144562617)
@@ -74,7 +74,9 @@ In IP-Symcon nun _Instanz hinzufügen_ (_CTRL+1_) auswählen unter der Kategorie
 | Gerät für Datenträger ... | string  | s.u.         | nur Datenträger mit S.M.A.R.T |
 
 | Betriebssystem | Partition 1 | Datenträger 1 |
+| :------------- | :---------- | :------------ |
 | Ubuntu         | /dev/sda1   | /dev/sda      |
+| Rasbian        | /dev/root   | nur unterstützt für HDD, keine SD-Karten (/dev/mmcblk0) oder USB-Sticks |
 
 ## 6. Anhang
 
@@ -85,6 +87,10 @@ GUIDs
   - ServerInfo: `{99B3B506-0808-433A-9745-32CDD63BC307}`
 
 ## 7. Versions-Historie
+
+- 1.6 @ 06.05.2019 16:03<br>
+  - Prüfung der Systemvoraussetzungen im Konfigurationsdialog
+  - Konfigurationsdialog ist reduziert, wenn Systemvoraussetzungen fehlen
 
 - 1.5 @ 29.03.2019 16:19<br>
   - SetValue() abgesichert
