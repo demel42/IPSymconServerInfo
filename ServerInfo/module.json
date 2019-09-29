@@ -9,5 +9,6 @@
 	"parentRequirements": [],
 	"childRequirements": [],
 	"implemented": [],
-	"prefix": "ServerInfo"
+	"prefix": "ServerInfo",
+	"url": "https://github.com/demel42/IPSymconServerInfo/blob/master/README.md"
 }

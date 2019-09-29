@@ -156,12 +156,14 @@ class ServerInfo extends IPSModule
         if ($s == '') {
             $formActions[] = ['type' => 'Button', 'label' => 'Update data', 'onClick' => 'ServerInfo_UpdateData($id);'];
         }
-        $formActions[] = ['type' => 'Label', 'label' => '____________________________________________________________________________________________________'];
-        $formActions[] = [
-                            'type'    => 'Button',
-                            'caption' => 'Module description',
-                            'onClick' => 'echo "https://github.com/demel42/IPSymconSpeedtest/blob/master/README.md";'
-                        ];
+		if (IPS_GetKernelVersion() < 5.2) {
+			$formActions[] = ['type' => 'Label', 'label' => '____________________________________________________________________________________________________'];
+			$formActions[] = [
+								'type'    => 'Button',
+								'caption' => 'Module description',
+								'onClick' => 'echo "https://github.com/demel42/IPSymconSpeedtest/blob/master/README.md";'
+							];
+		}
 
         $formStatus = [];
         $formStatus[] = ['code' => IS_CREATING, 'icon' => 'inactive', 'caption' => 'Instance getting created'];
