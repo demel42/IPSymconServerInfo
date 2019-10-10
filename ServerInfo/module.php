@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 require_once __DIR__ . '/../libs/common.php';  // globale Funktionen
 
 // Betriebssystem
@@ -159,10 +161,10 @@ class ServerInfo extends IPSModule
         if (IPS_GetKernelVersion() < 5.2) {
             $formActions[] = ['type' => 'Label', 'label' => '____________________________________________________________________________________________________'];
             $formActions[] = [
-                                'type'    => 'Button',
-                                'caption' => 'Module description',
-                                'onClick' => 'echo "https://github.com/demel42/IPSymconSpeedtest/blob/master/README.md";'
-                            ];
+                'type'    => 'Button',
+                'caption' => 'Module description',
+                'onClick' => 'echo "https://github.com/demel42/IPSymconSpeedtest/blob/master/README.md";'
+            ];
         }
 
         $formStatus = [];
@@ -247,7 +249,8 @@ class ServerInfo extends IPSModule
 
     private function get_version()
     {
-        $res = $this->execute('cat /proc/version');
+        // $res = $this->execute('cat /proc/version');
+        $res = $this->execute('lsb_release -ds');
         if ($res == '' || count($res) < 1) {
             $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
             return false;
