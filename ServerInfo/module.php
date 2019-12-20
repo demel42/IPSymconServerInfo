@@ -140,26 +140,26 @@ class ServerInfo extends IPSModule
         $formElements = [];
         if ($s == '') {
             $formElements[] = ['type' => 'CheckBox', 'name' => 'module_disable', 'caption' => 'Instance is disabled'];
-            $formElements[] = ['type' => 'Label', 'label' => 'Partitions to be monitored'];
+            $formElements[] = ['type' => 'Label', 'caption' => 'Partitions to be monitored'];
             $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'partition0_device', 'caption' => '1st device'];
             $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'partition1_device', 'caption' => '2nd device'];
 
-            $formElements[] = ['type' => 'Label', 'label' => 'Disks to be monitored'];
+            $formElements[] = ['type' => 'Label', 'caption' => 'Disks to be monitored'];
             $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'disk0_device', 'caption' => '1st device'];
             $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'disk1_device', 'caption' => '2nd device'];
 
-            $formElements[] = ['type' => 'Label', 'label' => 'Update data every X minutes'];
+            $formElements[] = ['type' => 'Label', 'caption' => 'Update data every X minutes'];
             $formElements[] = ['type' => 'IntervalBox', 'name' => 'update_interval', 'caption' => 'Minutes'];
         } else {
-            $formElements[] = ['type' => 'Label', 'label' => $s];
+            $formElements[] = ['type' => 'Label', 'caption' => $s];
         }
 
         $formActions = [];
         if ($s == '') {
-            $formActions[] = ['type' => 'Button', 'label' => 'Update data', 'onClick' => 'ServerInfo_UpdateData($id);'];
+            $formActions[] = ['type' => 'Button', 'caption' => 'Update data', 'onClick' => 'ServerInfo_UpdateData($id);'];
         }
         if (IPS_GetKernelVersion() < 5.2) {
-            $formActions[] = ['type' => 'Label', 'label' => '____________________________________________________________________________________________________'];
+            $formActions[] = ['type' => 'Label', 'caption' => '____________________________________________________________________________________________________'];
             $formActions[] = [
                 'type'    => 'Button',
                 'caption' => 'Module description',

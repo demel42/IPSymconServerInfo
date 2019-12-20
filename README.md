@@ -1,7 +1,7 @@
 # IPSymconServerInfo
 
 [![IPS-Version](https://img.shields.io/badge/Symcon_Version-5.0+-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-![Module-Version](https://img.shields.io/badge/Modul_Version-1.8-blue.svg)
+![Module-Version](https://img.shields.io/badge/Modul_Version-1.9-blue.svg)
 ![Code](https://img.shields.io/badge/Code-PHP-blue.svg)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
@@ -87,38 +87,42 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.8 @ 10.10.2019 17:27<br>
+- 1.9 @ 20.12.2019 13:54
+  - Anpassungen an IPS 5.3
+    - Formular-Elemente: 'label' in 'caption' geändert
+
+- 1.8 @ 10.10.2019 17:27
   - Anpassungen an IPS 5.2
     - IPS_SetVariableProfileValues(), IPS_SetVariableProfileDigits() nur bei INTEGER, FLOAT
     - Dokumentation-URL in module.json
   - Umstellung auf strict_types=1
   - Umstellung von StyleCI auf php-cs-fixer
 
-- 1.7 @ 09.08.2019 14:32<br>
+- 1.7 @ 09.08.2019 14:32
   - Schreibfehler korrigiert
 
-- 1.6 @ 06.05.2019 16:03<br>
+- 1.6 @ 06.05.2019 16:03
   - Prüfung der Systemvoraussetzungen im Konfigurationsdialog
   - Konfigurationsdialog ist reduziert, wenn Systemvoraussetzungen fehlen
 
-- 1.5 @ 29.03.2019 16:19<br>
+- 1.5 @ 29.03.2019 16:19
   - SetValue() abgesichert
 
-- 1.4 @ 21.03.2019 17:04<br>
+- 1.4 @ 21.03.2019 17:04
   - Anpassungen IPS 5, Abspaltung von Branch _ips_4.4_
   - Schalter, um ein Modul (temporär) zu deaktivieren
   - Konfigurations-Element IntervalBox -> NumberSpinner
 
-- 1.3 @ 21.12.2018 13:10<br>
+- 1.3 @ 21.12.2018 13:10
   - Standard-Konstanten verwenden
 
-- 1.2 @ 19.08.2018 12:01<br>
+- 1.2 @ 19.08.2018 12:01
   - define's der Variablentypen
   - Schaltfläche mit Link zu README.md im Konfigurationsdialog
 
-- 1.1 @ 15.08.2018 16:03<br>
+- 1.1 @ 15.08.2018 16:03
   - CPU-Temperatur/Ubuntu: da die Ermittlung der Temperatur aus _/sys/class/thermal/thermal_zone_ Hardware-abhängig ist, wird nun die höchste der dort ausgelesenen Temperaturen verwendet.<br>
   Das ist zwar nicht unbedingt "die" CPU-Temperatur, aber besser etwas zu hoch angegeben als zu niedirg.
 
-- 1.0 @ 14.08.2018 17:21<br>
-  Initiale Version
+- 1.0 @ 14.08.2018 17:21
+  - Initiale Version
