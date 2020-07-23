@@ -110,7 +110,7 @@ class ServerInfo extends IPSModule
         $s = $this->CheckPrerequisites();
         if ($s != '') {
             $this->SetStatus(self::$IS_INVALIDPREREQUISITES);
-			$this->LogMessage($s, KL_WARNING);
+            $this->LogMessage($s, KL_WARNING);
             return;
         }
 
