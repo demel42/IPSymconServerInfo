@@ -2,18 +2,7 @@
 
 declare(strict_types=1);
 
-if (!defined('VARIABLETYPE_BOOLEAN')) {
-    define('VARIABLETYPE_BOOLEAN', 0);
-    define('VARIABLETYPE_INTEGER', 1);
-    define('VARIABLETYPE_FLOAT', 2);
-    define('VARIABLETYPE_STRING', 3);
-}
-
-if (!defined('IS_INVALIDPREREQUISITES')) {
-    define('IS_INVALIDPREREQUISITES', IS_EBASE + 1);
-}
-
-trait ServerInfoCommon
+trait ServerInfoCommonLib
 {
     protected function SetValue($Ident, $Value)
     {

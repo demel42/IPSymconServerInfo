@@ -3,21 +3,12 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../libs/common.php';  // globale Funktionen
-
-// Betriebssystem
-if (!defined('OS_NONE')) {
-    define('OS_NONE', 0);
-}
-if (!defined('OS_UBUNTU')) {
-    define('OS_UBUNTU', 1);
-}
-if (!defined('OS_RASPBIAN')) {
-    define('OS_RASPBIAN', 2);
-}
+require_once __DIR__ . '/../libs/local.php';   // lokale Funktionen
 
 class ServerInfo extends IPSModule
 {
-    use ServerInfoCommon;
+    use ServerInfoCommonLib;
+    use ServerInfoLocalLib;
 
     public function Create()
     {
@@ -118,7 +109,7 @@ class ServerInfo extends IPSModule
 
         $s = $this->CheckPrerequisites();
         if ($s != '') {
-            $this->SetStatus(IS_INVALIDPREREQUISITES);
+            $this->SetStatus(self::$IS_INVALIDPREREQUISITES);
             return;
         }
 
@@ -135,40 +126,91 @@ class ServerInfo extends IPSModule
 
     public function GetConfigurationForm()
     {
-        $s = $this->CheckPrerequisites();
+        $formElements = $this->GetFormElements();
+        $formActions = $this->GetFormActions();
+        $formStatus = $this->GetFormStatus();
 
+        $form = json_encode(['elements' => $formElements, 'actions' => $formActions, 'status' => $formStatus]);
+        if ($form == '') {
+            $this->SendDebug(__FUNCTION__, 'json_error=' . json_last_error_msg(), 0);
+            $this->SendDebug(__FUNCTION__, '=> formElements=' . print_r($formElements, true), 0);
+            $this->SendDebug(__FUNCTION__, '=> formActions=' . print_r($formActions, true), 0);
+            $this->SendDebug(__FUNCTION__, '=> formStatus=' . print_r($formStatus, true), 0);
+        }
+        return $form;
+    }
+
+    private function GetFormElements()
+    {
         $formElements = [];
-        if ($s == '') {
-            $formElements[] = ['type' => 'CheckBox', 'name' => 'module_disable', 'caption' => 'Instance is disabled'];
-            $formElements[] = ['type' => 'Label', 'caption' => 'Partitions to be monitored'];
-            $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'partition0_device', 'caption' => '1st device'];
-            $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'partition1_device', 'caption' => '2nd device'];
 
-            $formElements[] = ['type' => 'Label', 'caption' => 'Disks to be monitored'];
-            $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'disk0_device', 'caption' => '1st device'];
-            $formElements[] = ['type' => 'ValidationTextBox', 'name' => 'disk1_device', 'caption' => '2nd device'];
-
-            $formElements[] = ['type' => 'Label', 'caption' => 'Update data every X minutes'];
-            $formElements[] = ['type' => 'IntervalBox', 'name' => 'update_interval', 'caption' => 'Minutes'];
-        } else {
-            $formElements[] = ['type' => 'Label', 'caption' => $s];
+        $s = $this->CheckPrerequisites();
+        if ($s != '') {
+            $formElements[] = [
+                'type'    => 'Label',
+                'caption' => $s];
         }
 
+        $formElements[] = [
+            'type'    => 'CheckBox',
+            'name'    => 'module_disable',
+            'caption' => 'Instance is disabled'
+        ];
+
+        $formElements[] = [
+            'type'    => 'Label',
+            'caption' => 'Partitions to be monitored'
+        ];
+        $formElements[] = [
+            'type'    => 'ValidationTextBox',
+            'name'    => 'partition0_device',
+            'caption' => '1st device'
+        ];
+        $formElements[] = [
+            'type'    => 'ValidationTextBox',
+            'name'    => 'partition1_device',
+            'caption' => '2nd device'
+        ];
+
+        $formElements[] = [
+            'type'    => 'Label',
+            'caption' => 'Disks to be monitored'
+        ];
+        $formElements[] = [
+            'type'    => 'ValidationTextBox',
+            'name'    => 'disk0_device',
+            'caption' => '1st device'
+        ];
+        $formElements[] = [
+            'type'    => 'ValidationTextBox',
+            'name'    => 'disk1_device',
+            'caption' => '2nd device'
+        ];
+
+        $formElements[] = [
+            'type'    => 'Label',
+            'caption' => 'Update data every X minutes'
+        ];
+        $formElements[] = [
+            'type'    => 'IntervalBox',
+            'name'    => 'update_interval',
+            'caption' => 'Minutes'
+        ];
+
+        return $formElements;
+    }
+
+    private function GetFormActions()
+    {
         $formActions = [];
-        if ($s == '') {
-            $formActions[] = ['type' => 'Button', 'caption' => 'Update data', 'onClick' => 'ServerInfo_UpdateData($id);'];
-        }
 
-        $formStatus = [];
-        $formStatus[] = ['code' => IS_CREATING, 'icon' => 'inactive', 'caption' => 'Instance getting created'];
-        $formStatus[] = ['code' => IS_ACTIVE, 'icon' => 'active', 'caption' => 'Instance is active'];
-        $formStatus[] = ['code' => IS_DELETING, 'icon' => 'inactive', 'caption' => 'Instance is deleted'];
-        $formStatus[] = ['code' => IS_INACTIVE, 'icon' => 'inactive', 'caption' => 'Instance is inactive'];
-        $formStatus[] = ['code' => IS_NOTCREATED, 'icon' => 'inactive', 'caption' => 'Instance is not created'];
+        $formActions[] = [
+            'type'    => 'Button',
+            'caption' => 'Update data',
+            'onClick' => 'ServerInfo_UpdateData($id);'
+        ];
 
-        $formStatus[] = ['code' => IS_INVALIDPREREQUISITES, 'icon' => 'error', 'caption' => 'Instance is inactive (invalid preconditions)'];
-
-        return json_encode(['elements' => $formElements, 'actions' => $formActions, 'status' => $formStatus]);
+        return $formActions;
     }
 
     protected function SetUpdateInterval()
