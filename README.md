@@ -86,12 +86,13 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.10 @ 23.07.2020 12:27 (beta)
+- 1.10 @ 28.07.2020 17:20 (beta)
   - LICENSE.md hinzugefügt
   - lokale Funktionen aus common.php in locale.php verlagert
   - Traits des Moduls haben nun Postfix "Lib"
   - GetConfigurationForm() überarbeitet
   - define's durch statische Klassen-Variablen ersetzt
+  - Fix: fehlerhafte Variablenbezeichnung verwendet bei 2. Partition
 
 - 1.9 @ 30.12.2019 10:56
   - Anpassungen an IPS 5.3

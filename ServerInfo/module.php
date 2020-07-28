@@ -99,9 +99,9 @@ class ServerInfo extends IPSModule
         $this->MaintainVariable('Partition0Available', $this->Translate('Available space of 1st partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition0_device != '');
         $this->MaintainVariable('Partition0Usage', $this->Translate('Usage of 1st partition'), VARIABLETYPE_FLOAT, 'ServerInfo.Usage', $vpos++, $partition0_device != '');
         // Partition 1
-        $this->MaintainVariable('Partition1Name', $this->Translate('Name of 2nd partition'), VARIABLETYPE_STRING, '', $vpos++, $partition1_device != '');
+        $this->MaintainVariable('Partition1Mountpoint', $this->Translate('Mountpoint of 2nd partition'), VARIABLETYPE_STRING, '', $vpos++, $partition1_device != '');
         $this->MaintainVariable('Partition1Size', $this->Translate('Size of 2nd partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition1_device != '');
-        $this->MaintainVariable('Partition1Used', $this->Translate('used space of 2nd partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition1_device != '');
+        $this->MaintainVariable('Partition1Used', $this->Translate('Used space of 2nd partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition1_device != '');
         $this->MaintainVariable('Partition1Available', $this->Translate('Available space of 2nd partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition1_device != '');
         $this->MaintainVariable('Partition1Usage', $this->Translate('Usage of 2nd partition'), VARIABLETYPE_FLOAT, 'ServerInfo.Usage', $vpos++, $partition1_device != '');
 
