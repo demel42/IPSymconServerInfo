@@ -549,8 +549,8 @@ class ServerInfo extends IPSModule
         }
 
         $CpuModel = '';
-        $CpuClock = 0;
         $CpuCount = 0;
+        $CpuCurFrequency = 0;
 
         $v = [];
         foreach ($res as $r) {
@@ -564,9 +564,28 @@ class ServerInfo extends IPSModule
             $v[$name] = $value;
         }
 
-        $CpuModel = isset($v['Modellname']) ? $v['Modellname'] : '';
-        $CpuCurFrequency = isset($v['CPU MHz']) ? $v['CPU MHz'] : 0;
-        $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
+        $sys = IPS_GetKernelPlatform();
+        switch ($sys) {
+        case 'Ubuntu':
+            $CpuModel = isset($v['Modellname']) ? $v['Modellname'] : '';
+            $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
+            $CpuCurFrequency = isset($v['CPU MHz']) ? $v['CPU MHz'] : 0;
+            beeak;
+            // FIXME: No break. Please add proper comment if intentional
+        case 'Raspberry Pi':
+            $CpuModel = isset($v['Model name']) ? $v['Model name'] : '';
+            $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
+            $res = $this->execute('vcgencmd measure_clock arm ');
+            if ($res == '' || count($res) < 1) {
+                $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                return false;
+            }
+            $s = preg_split('/=/', $res[0]);
+            if (preg_match('/^frequency/', $s[0])) {
+                $CpuCurFrequency = (int) ((float) $s[1] / 1024 / 1024);
+            }
+            break;
+        }
 
         $this->SendDebug(__FUNCTION__, 'CpuModel=' . $CpuModel . ', CpuCurFrequency=' . $CpuCurFrequency . ' MHz, CpuCount=' . $CpuCount, 0);
         $this->SetValue('CpuModel', $CpuModel);
