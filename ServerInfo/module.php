@@ -571,7 +571,6 @@ class ServerInfo extends IPSModule
             $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
             $CpuCurFrequency = isset($v['CPU MHz']) ? $v['CPU MHz'] : 0;
             break;
-            // FIXME: No break. Please add proper comment if intentional
         case 'Raspberry Pi':
             $CpuModel = isset($v['Model name']) ? $v['Model name'] : '';
             $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
