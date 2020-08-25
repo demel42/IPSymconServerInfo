@@ -86,7 +86,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.10 @ 09.08.2020 16:57 (beta)
+- 1.10 @ 25.08.2020 15:08 (beta)
   - LICENSE.md hinzugefügt
   - lokale Funktionen aus common.php in locale.php verlagert
   - Traits des Moduls haben nun Postfix "Lib"
@@ -94,6 +94,7 @@ GUIDs
   - define's durch statische Klassen-Variablen ersetzt
   - Fix: fehlerhafte Variablenbezeichnung verwendet bei 2. Partition
   - Fix für Raspberry: Erkennung CPU-Modell und akt. CPU-Frequenz korrigiert
+  - Temperaturüberwachung nur durchhführen, wenn Festplatten eingetragen sind; damit ist das Programm "hddtemp" in dem Fall auch keine Voraussetzung mehr.
 
 - 1.9 @ 30.12.2019 10:56
   - Anpassungen an IPS 5.3

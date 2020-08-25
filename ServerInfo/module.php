@@ -44,9 +44,15 @@ class ServerInfo extends IPSModule
             $r[] = $this->Translate('supported OS');
         }
 
-        $data = exec('hddtemp --version 2>&1', $output, $exitcode);
-        if ($exitcode != 0) {
-            $r[] = 'hddtemp';
+        for ($cnt = 0; $cnt < 2; $cnt++) {
+            $device = $this->ReadPropertyString('disk' . $cnt . '_device');
+            if ($device != '') {
+                $data = exec('hddtemp --version 2>&1', $output, $exitcode);
+                if ($exitcode != 0) {
+                    $r[] = 'hddtemp';
+                }
+                break;
+            }
         }
 
         if ($r != []) {
@@ -165,12 +171,12 @@ class ServerInfo extends IPSModule
         $formElements[] = [
             'type'    => 'ValidationTextBox',
             'name'    => 'partition0_device',
-            'caption' => '1st device'
+            'caption' => '1st partition'
         ];
         $formElements[] = [
             'type'    => 'ValidationTextBox',
             'name'    => 'partition1_device',
-            'caption' => '2nd device'
+            'caption' => '2nd partition'
         ];
 
         $formElements[] = [
@@ -180,12 +186,12 @@ class ServerInfo extends IPSModule
         $formElements[] = [
             'type'    => 'ValidationTextBox',
             'name'    => 'disk0_device',
-            'caption' => '1st device'
+            'caption' => '1st disk'
         ];
         $formElements[] = [
             'type'    => 'ValidationTextBox',
             'name'    => 'disk1_device',
-            'caption' => '2nd device'
+            'caption' => '2nd disk'
         ];
 
         $formElements[] = [
