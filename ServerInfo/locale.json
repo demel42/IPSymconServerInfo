@@ -6,10 +6,14 @@
 			"Partitions to be monitored": "zu kontrollierende Partitionen",
 			"1st partition": "1. Partition",
 			"2nd partition": "2. Partition",
+			"3rd partition": "3. Partition",
+			"4th partition": "4. Partition",
 
 			"Disks to be monitored" : "zu kontrollierende Datenträger",
 			"1st disk": "1. Festplatte",
 			"2nd disk": "2. Festplatte",
+			"3rd disk": "3. Festplatte",
+			"4th disk": "4. Festplatte",
 
 			"Update data every X minutes": "Aktualisiere Daten alle X Minuten",
 			"Minutes": "Minuten",
@@ -44,6 +48,8 @@
 			"Temperatur of cpu": "CPU-Temperatur",
 			"Temperatur of 1st disk": "Temperatur der 1. Festplatte",
 			"Temperatur of 2nd disk": "Temperatur der 2. Festplatte",
+			"Temperatur of 3rd disk": "Temperatur der 3. Festplatte",
+			"Temperatur of 4th disk": "Temperatur der 4. Festplatte",
 
 			"Mountpoint of 1st partition": "Verzeichnis der 1. Partition",
 			"Size of 1st partition": "Größe der 1. Partition",
@@ -56,6 +62,18 @@
 			"Used space of 2nd partition": "Verwendeter Platz der 2. Partition",
 			"Available space of 2nd partition": "Verfügbarer Platz der 2. Partition",
 			"Usage of 2nd partition": "Ausnutzung der 2. Partition",
+
+			"Mountpoint of 3rd partition": "Verzeichnis der 3. Partition",
+			"Size of 3rd partition": "Größe der 3. Partition",
+			"Used space of 3rd partition": "Verwendeter Platz der 3. Partition",
+			"Available space of 3rd partition": "Verfügbarer Platz der 3. Partition",
+			"Usage of 3rd partition": "Ausnutzung der 3. Partition",
+
+			"Mountpoint of 4th partition": "Verzeichnis der 4. Partition",
+			"Size of 4th partition": "Größe der 4. Partition",
+			"Used space of 4th partition": "Verwendeter Platz der 4. Partition",
+			"Available space of 4th partition": "Verfügbarer Platz der 4. Partition",
+			"Usage of 4th partition": "Ausnutzung der 4. Partition",
 
 			"Last update": "Letzte Aktualisierung",
 

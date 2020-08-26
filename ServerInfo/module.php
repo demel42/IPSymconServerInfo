@@ -10,6 +10,8 @@ class ServerInfo extends IPSModule
     use ServerInfoCommonLib;
     use ServerInfoLocalLib;
 
+    public static $NUM_DEVICE = 4;
+
     public function Create()
     {
         parent::Create();
@@ -18,8 +20,12 @@ class ServerInfo extends IPSModule
 
         $this->RegisterPropertyString('partition0_device', '');
         $this->RegisterPropertyString('partition1_device', '');
+        $this->RegisterPropertyString('partition2_device', '');
+        $this->RegisterPropertyString('partition3_device', '');
         $this->RegisterPropertyString('disk0_device', '');
         $this->RegisterPropertyString('disk1_device', '');
+        $this->RegisterPropertyString('disk2_device', '');
+        $this->RegisterPropertyString('disk3_device', '');
 
         $this->RegisterPropertyInteger('update_interval', '0');
 
@@ -40,11 +46,11 @@ class ServerInfo extends IPSModule
         $r = [];
 
         $sys = IPS_GetKernelPlatform();
-        if (!in_array($sys, ['Ubuntu', 'Raspberry Pi'])) {
+        if (!in_array($sys, ['Ubuntu', 'Raspberry Pi', 'SymBox', 'Docker'])) {
             $r[] = $this->Translate('supported OS');
         }
 
-        for ($cnt = 0; $cnt < 2; $cnt++) {
+        for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
             $device = $this->ReadPropertyString('disk' . $cnt . '_device');
             if ($device != '') {
                 $data = exec('hddtemp --version 2>&1', $output, $exitcode);
@@ -64,11 +70,6 @@ class ServerInfo extends IPSModule
 
     public function ApplyChanges()
     {
-        $partition0_device = $this->ReadPropertyString('partition0_device');
-        $partition1_device = $this->ReadPropertyString('partition1_device');
-        $disk0_device = $this->ReadPropertyString('disk0_device');
-        $disk1_device = $this->ReadPropertyString('disk1_device');
-
         parent::ApplyChanges();
 
         $vpos = 0;
@@ -96,25 +97,31 @@ class ServerInfo extends IPSModule
         $this->MaintainVariable('CpuUsage', $this->Translate('Usage of cpu'), VARIABLETYPE_FLOAT, 'ServerInfo.Usage', $vpos++, true);
         // Temperatur
         $this->MaintainVariable('CpuTemp', $this->Translate('Temperatur of cpu'), VARIABLETYPE_FLOAT, 'ServerInfo.Temperature', $vpos++, true);
-        $this->MaintainVariable('Disk0Temp', $this->Translate('Temperatur of 1st disk'), VARIABLETYPE_FLOAT, 'ServerInfo.Temperature', $vpos++, $disk0_device != '');
-        $this->MaintainVariable('Disk1Temp', $this->Translate('Temperatur of 2nd disk'), VARIABLETYPE_FLOAT, 'ServerInfo.Temperature', $vpos++, $disk1_device != '');
-        // Partition 0
-        $this->MaintainVariable('Partition0Mountpoint', $this->Translate('Mountpoint of 1st partition'), VARIABLETYPE_STRING, '', $vpos++, $partition0_device != '');
-        $this->MaintainVariable('Partition0Size', $this->Translate('Size of 1st partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition0_device != '');
-        $this->MaintainVariable('Partition0Used', $this->Translate('Used space of 1st partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition0_device != '');
-        $this->MaintainVariable('Partition0Available', $this->Translate('Available space of 1st partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition0_device != '');
-        $this->MaintainVariable('Partition0Usage', $this->Translate('Usage of 1st partition'), VARIABLETYPE_FLOAT, 'ServerInfo.Usage', $vpos++, $partition0_device != '');
-        // Partition 1
-        $this->MaintainVariable('Partition1Mountpoint', $this->Translate('Mountpoint of 2nd partition'), VARIABLETYPE_STRING, '', $vpos++, $partition1_device != '');
-        $this->MaintainVariable('Partition1Size', $this->Translate('Size of 2nd partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition1_device != '');
-        $this->MaintainVariable('Partition1Used', $this->Translate('Used space of 2nd partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition1_device != '');
-        $this->MaintainVariable('Partition1Available', $this->Translate('Available space of 2nd partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $partition1_device != '');
-        $this->MaintainVariable('Partition1Usage', $this->Translate('Usage of 2nd partition'), VARIABLETYPE_FLOAT, 'ServerInfo.Usage', $vpos++, $partition1_device != '');
+
+        $cntName = ['1st', '2nd', '3rd', '4th'];
+        for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
+            $dev = $this->ReadPropertyString('disk' . $cnt . '_device');
+            $pfx = 'Disk' . $cnt;
+            $cn = $cntName[$cnt];
+            $this->MaintainVariable($pfx . 'Temp', $this->Translate('Temperatur of ' . $cn . ' disk'), VARIABLETYPE_FLOAT, 'ServerInfo.Temperature', $vpos++, $dev != '');
+        }
+
+        for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
+            $dev = $this->ReadPropertyString('partition' . $cnt . '_device');
+            $pfx = 'Partition' . $cnt;
+            $cn = $cntName[$cnt];
+            $this->MaintainVariable($pfx . 'Mountpoint', $this->Translate('Mountpoint of ' . $cn . ' partition'), VARIABLETYPE_STRING, '', $vpos++, $dev != '');
+            $this->MaintainVariable($pfx . 'Size', $this->Translate('Size of ' . $cn . ' partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $dev != '');
+            $this->MaintainVariable($pfx . 'Used', $this->Translate('Used space of ' . $cn . ' partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $dev != '');
+            $this->MaintainVariable($pfx . 'Available', $this->Translate('Available space of ' . $cn . ' partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $dev != '');
+            $this->MaintainVariable($pfx . 'Usage', $this->Translate('Usage of ' . $cn . ' partition'), VARIABLETYPE_FLOAT, 'ServerInfo.Usage', $vpos++, $dev != '');
+        }
 
         $this->MaintainVariable('LastUpdate', $this->Translate('Last update'), VARIABLETYPE_INTEGER, '~UnixTimestamp', $vpos++, true);
 
         $s = $this->CheckPrerequisites();
         if ($s != '') {
+            $this->SetTimerInterval('UpdateData', 0);
             $this->SetStatus(self::$IS_INVALIDPREREQUISITES);
             $this->LogMessage($s, KL_WARNING);
             return;
@@ -155,7 +162,8 @@ class ServerInfo extends IPSModule
         if ($s != '') {
             $formElements[] = [
                 'type'    => 'Label',
-                'caption' => $s];
+                'caption' => $s
+            ];
         }
 
         $formElements[] = [
@@ -164,35 +172,31 @@ class ServerInfo extends IPSModule
             'caption' => 'Instance is disabled'
         ];
 
+        $cntName = ['1st', '2nd', '3rd', '4th'];
+
         $formElements[] = [
             'type'    => 'Label',
             'caption' => 'Partitions to be monitored'
         ];
-        $formElements[] = [
-            'type'    => 'ValidationTextBox',
-            'name'    => 'partition0_device',
-            'caption' => '1st partition'
-        ];
-        $formElements[] = [
-            'type'    => 'ValidationTextBox',
-            'name'    => 'partition1_device',
-            'caption' => '2nd partition'
-        ];
+        for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
+            $formElements[] = [
+                'type'    => 'ValidationTextBox',
+                'name'    => 'partition' . $cnt . '_device',
+                'caption' => $cntName[$cnt] . ' partition'
+            ];
+        }
 
         $formElements[] = [
             'type'    => 'Label',
             'caption' => 'Disks to be monitored'
         ];
-        $formElements[] = [
-            'type'    => 'ValidationTextBox',
-            'name'    => 'disk0_device',
-            'caption' => '1st disk'
-        ];
-        $formElements[] = [
-            'type'    => 'ValidationTextBox',
-            'name'    => 'disk1_device',
-            'caption' => '2nd disk'
-        ];
+        for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
+            $formElements[] = [
+                'type'    => 'ValidationTextBox',
+                'name'    => 'disk' . $cnt . '_device',
+                'caption' => $cntName[$cnt] . ' disk'
+            ];
+        }
 
         $formElements[] = [
             'type'    => 'Label',
@@ -229,9 +233,8 @@ class ServerInfo extends IPSModule
 
     public function UpdateData()
     {
-        $inst = IPS_GetInstance($this->InstanceID);
-        if ($inst['InstanceStatus'] == IS_INACTIVE) {
-            $this->SendDebug(__FUNCTION__, 'instance is inactive, skip', 0);
+        if ($this->CheckStatus() == self::$STATUS_INVALID) {
+            $this->SendDebug(__FUNCTION__, $this->GetStatusText() . ' => skip', 0);
             return;
         }
 
@@ -290,14 +293,50 @@ class ServerInfo extends IPSModule
 
     private function get_version()
     {
-        // $res = $this->execute('cat /proc/version');
-        $res = $this->execute('lsb_release -ds');
-        if ($res == '' || count($res) < 1) {
-            $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+        $sys = IPS_GetKernelPlatform();
+        switch ($sys) {
+        case 'Ubuntu':
+        case 'Raspberry Pi':
+            $res = $this->execute('lsb_release -ds');
+            if ($res == '' || count($res) < 1) {
+                $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                return false;
+            }
+            $OsVersion = $res[0];
+            break;
+        case 'SymBox':
+            $res = $this->execute('uname -a');
+            if ($res == '' || count($res) < 1) {
+                $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                return false;
+            }
+            $r = explode(' ', $res);
+            if ($r == '' || count($r) < 3) {
+                $this->SendDebug(__FUNCTION__, 'unknwon data format: ' . print_r($res, true), 0);
+                $OsVersion = $res;
+            } else {
+                $OsVersion = $r[1] . ' ' . $r[2];
+            }
+            break;
+        case 'Docker':
+            $res = $this->execute('cat /etc/os-release');
+            if ($res == '' || count($res) < 1) {
+                $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                return false;
+            }
+            $r = explode(' ', $res);
+            if ($r == '' || count($r) < 3) {
+                $this->SendDebug(__FUNCTION__, 'unknwon data format: ' . print_r($res, true), 0);
+                $OsVersion = $res;
+            } else {
+                $OsVersion = $r[0] . ' ' . $r[1] . ' ' . $r[2];
+            }
+            break;
+        default:
+            $this->SendDebug(__FUNCTION__, 'unsuported OS ' . $sys, 0);
             return false;
+            break;
         }
-
-        $OsVersion = $res[0];
 
         $this->SendDebug(__FUNCTION__, 'OsVersion=' . $OsVersion, 0);
         $this->SetValue('OsVersion', $OsVersion);
@@ -444,7 +483,7 @@ class ServerInfo extends IPSModule
 
     private function get_partition()
     {
-        for ($cnt = 0; $cnt < 2; $cnt++) {
+        for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
             $device = $this->ReadPropertyString('partition' . $cnt . '_device');
             if ($device == '') {
                 continue;
@@ -520,7 +559,7 @@ class ServerInfo extends IPSModule
 
     private function get_hddtemp()
     {
-        for ($cnt = 0; $cnt < 2; $cnt++) {
+        for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
             $device = $this->ReadPropertyString('disk' . $cnt . '_device');
             if ($device == '') {
                 continue;
@@ -548,47 +587,88 @@ class ServerInfo extends IPSModule
 
     private function get_cpuinfo()
     {
-        $res = $this->execute('lscpu ');
-        if ($res == '' || count($res) < 1) {
-            $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
-            return false;
-        }
-
         $CpuModel = '';
         $CpuCount = 0;
         $CpuCurFrequency = 0;
 
-        $v = [];
-        foreach ($res as $r) {
-            $s = preg_split("/:[\s]+/", $r);
-            if (count($s) < 2) {
-                $this->SendDebug(__FUNCTION__, 'bad data: ' . $r, 0);
-                continue;
-            }
-            $name = $s[0];
-            $value = $s[1];
-            $v[$name] = $value;
-        }
-
         $sys = IPS_GetKernelPlatform();
         switch ($sys) {
         case 'Ubuntu':
-            $CpuModel = isset($v['Modellname']) ? $v['Modellname'] : '';
-            $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
-            $CpuCurFrequency = isset($v['CPU MHz']) ? $v['CPU MHz'] : 0;
-            break;
         case 'Raspberry Pi':
-            $CpuModel = isset($v['Model name']) ? $v['Model name'] : '';
-            $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
-            $res = $this->execute('vcgencmd measure_clock arm ');
+        case 'Docker':
+            $res = $this->execute('lscpu');
             if ($res == '' || count($res) < 1) {
                 $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
                 return false;
             }
-            $s = preg_split('/=/', $res[0]);
-            if (preg_match('/^frequency/', $s[0])) {
-                $CpuCurFrequency = (int) ((float) $s[1] / 1024 / 1024);
+            $v = [];
+            foreach ($res as $r) {
+                $s = preg_split("/:[\s]+/", $r);
+                if (count($s) < 2) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . $r, 0);
+                    continue;
+                }
+                $name = $s[0];
+                $value = $s[1];
+                $v[$name] = $value;
             }
+            switch ($sys) {
+            case 'Ubuntu':
+                $CpuModel = isset($v['Modellname']) ? $v['Modellname'] : '';
+                $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
+                $CpuCurFrequency = isset($v['CPU MHz']) ? $v['CPU MHz'] : 0;
+                break;
+            case 'Raspberry Pi':
+                $CpuModel = isset($v['Model name']) ? $v['Model name'] : '';
+                $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
+                $res = $this->execute('vcgencmd measure_clock arm ');
+                if ($res == '' || count($res) < 1) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                    return false;
+                }
+                $s = preg_split('/=/', $res[0]);
+                if (preg_match('/^frequency/', $s[0])) {
+                    $CpuCurFrequency = (int) ((float) $s[1] / 1024 / 1024);
+                }
+                break;
+            case 'Docker':
+                $CpuModel = isset($v['Model name']) ? $v['Model name'] : '';
+                $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
+                $CpuCurFrequency = isset($v['CPU MHz']) ? $v['CPU MHz'] : 0;
+                break;
+            }
+            break;
+        case 'SymBox':
+            $res = $this->execute('cat /proc/cpuinfo');
+            if ($res == '' || count($res) < 1) {
+                $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                return false;
+            }
+            foreach ($res as $r) {
+                $s = preg_split("/[\s]+:[\s]+/", $r);
+                if (count($s) < 2) {
+                    continue;
+                }
+                switch ($s[0]) {
+                    case 'model name':
+                        if ($CpuCount == 1) {
+                            $CpuModel = $s[1];
+                        }
+                        break;
+                    case 'processor':
+                        $CpuCount++;
+                        break;
+                    case 'cpu MHz':
+                        if ($CpuCount == 1) {
+                            $CpuCurFrequency = $s[1];
+                        }
+                        break;
+                }
+            }
+            break;
+        default:
+            $this->SendDebug(__FUNCTION__, 'unsuported OS ' . $sys, 0);
+            return false;
             break;
         }
 
