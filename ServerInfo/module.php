@@ -657,12 +657,18 @@ class ServerInfo extends IPSModule
                     case 'processor':
                         $CpuCount++;
                         break;
-                    case 'cpu MHz':
-                        if ($CpuCount == 1) {
-                            $CpuCurFrequency = $s[1];
-                        }
+                    default:
                         break;
                 }
+            }
+            $res = $this->execute('vcgencmd measure_clock arm ');
+            if ($res == '' || count($res) < 1) {
+                $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                return false;
+            }
+            $s = preg_split('/=/', $res[0]);
+            if (preg_match('/^frequency/', $s[0])) {
+                $CpuCurFrequency = (int) ((float) $s[1] / 1024 / 1024);
             }
             break;
         default:
