@@ -324,12 +324,11 @@ class ServerInfo extends IPSModule
                 $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
                 return false;
             }
-            $r = explode(' ', $res[0]);
-            if ($r == '' || count($r) < 3) {
+            if ($res == '' || count($res) < 3) {
                 $this->SendDebug(__FUNCTION__, 'unknwon data format: ' . print_r($res, true), 0);
                 $OsVersion = $res;
             } else {
-                $OsVersion = $r[0] . ' ' . $r[1] . ' ' . $r[2];
+                $OsVersion = $res[0] . ' ' . $res[1];
             }
             break;
         default:
