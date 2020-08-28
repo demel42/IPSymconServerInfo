@@ -305,17 +305,16 @@ class ServerInfo extends IPSModule
             $OsVersion = $res[0];
             break;
         case 'SymBox':
-            $res = $this->execute('uname -a');
+            $res = $this->execute('ls -t /mnt/system/symupd');
             if ($res == '' || count($res) < 1) {
                 $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
                 return false;
             }
-            $r = explode(' ', $res[0]);
-            if ($r == '' || count($r) < 3) {
-                $this->SendDebug(__FUNCTION__, 'unknwon data format: ' . print_r($res, true), 0);
-                $OsVersion = $res;
+            if (preg_match('/^symupd_(.*).md5$/', $res[0], $r)) {
+                $OsVersion = 'SymOS ' . $r[1];
             } else {
-                $OsVersion = $r[1] . ' ' . $r[2];
+                $this->SendDebug(__FUNCTION__, 'unknwon data format: ' . print_r($res, true), 0);
+                return false;
             }
             break;
         case 'Docker':
