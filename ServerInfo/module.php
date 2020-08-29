@@ -90,6 +90,9 @@ class ServerInfo extends IPSModule
         $this->MaintainVariable('MemTotal', $this->Translate('Total memory'), VARIABLETYPE_FLOAT, 'ServerInfo.MB', $vpos++, true);
         $this->MaintainVariable('MemFree', $this->Translate('Free memory'), VARIABLETYPE_FLOAT, 'ServerInfo.MB', $vpos++, true);
         $this->MaintainVariable('MemAvailable', $this->Translate('Available memory'), VARIABLETYPE_FLOAT, 'ServerInfo.MB', $vpos++, true);
+        // Swap
+        $this->MaintainVariable('SwapTotal', $this->Translate('Total swap-space'), VARIABLETYPE_FLOAT, 'ServerInfo.MB', $vpos++, true);
+        $this->MaintainVariable('SwapFree', $this->Translate('Free swap-space'), VARIABLETYPE_FLOAT, 'ServerInfo.MB', $vpos++, true);
         // CPU
         $this->MaintainVariable('CpuModel', $this->Translate('Model of cpu'), VARIABLETYPE_STRING, '', $vpos++, true);
         $this->MaintainVariable('CpuCurFrequency', $this->Translate('Current cpu-frequency'), VARIABLETYPE_INTEGER, 'ServerInfo.Frequency', $vpos++, true);
@@ -378,11 +381,16 @@ class ServerInfo extends IPSModule
         $MemTotal = isset($v['MemTotal']) ? $v['MemTotal'] : 0;
         $MemFree = isset($v['MemFree']) ? $v['MemFree'] : 0;
         $MemAvailable = isset($v['MemAvailable']) ? $v['MemAvailable'] : 0;
-
         $this->SendDebug(__FUNCTION__, 'MemTotal=' . $MemTotal . ', MemFree=' . $MemFree . ', MemAvailable=' . $MemAvailable, 0);
         $this->SetValue('MemTotal', $MemTotal);
         $this->SetValue('MemFree', $MemFree);
         $this->SetValue('MemAvailable', $MemAvailable);
+
+        $SwapTotal = isset($v['SwapTotal']) ? $v['SwapTotal'] : 0;
+        $SwapFree = isset($v['SwapFree']) ? $v['SwapFree'] : 0;
+        $this->SendDebug(__FUNCTION__, 'SwapTotal=' . $SwapTotal . ', SwapFree=' . $SwapFree, 0);
+        $this->SetValue('SwapTotal', $SwapTotal);
+        $this->SetValue('SwapFree', $SwapFree);
 
         return true;
     }

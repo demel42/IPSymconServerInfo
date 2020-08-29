@@ -40,6 +40,9 @@
 			"Free memory": "freier Hauptspeicher",
 			"Available memory": "verfügbarer Hauptspeicher",
 
+			"Total swap-space": "gesamter Auslagerungsbereich",
+			"Free swap-space": "freier Auslagerungsbereich",
+
 			"Model of cpu": "CPU-Modell",
 			"Current cpu-frequency": "aktuelle CPU-Frequenz",
 			"Number of cpu-cores": "Anzahl der CPU-Kerne",
