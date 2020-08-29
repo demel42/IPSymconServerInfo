@@ -97,7 +97,7 @@ GUIDs
   - Temperaturüberwachung der Festplatten nur durchführen, wenn Festplatten eingetragen sind; damit ist das Programm "hddtemp" in dem Fall auch keine Voraussetzung mehr.
   - Ergänzung um die Platformen "SymBox" und "Docker"
   - Anzahl der Festplatten und Partitionen von 2 auf 4 erhöht
-  - Angabe des Auslagerungsbereichs (SwapTotal, SwapFree) hinzugefügt
+  - Information zu dem Auslagerungsbereich (SwapTotal, SwapFree) hinzugefügt
 
 - 1.9 @ 30.12.2019 10:56
   - Anpassungen an IPS 5.3
