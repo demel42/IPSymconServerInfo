@@ -18,6 +18,8 @@ class ServerInfo extends IPSModule
 
         $this->RegisterPropertyBoolean('module_disable', false);
 
+        $this->RegisterPropertyBoolean('with_swap', true);
+
         $this->RegisterPropertyString('partition0_device', '');
         $this->RegisterPropertyString('partition1_device', '');
         $this->RegisterPropertyString('partition2_device', '');
@@ -72,6 +74,8 @@ class ServerInfo extends IPSModule
     {
         parent::ApplyChanges();
 
+        $with_swap = $this->ReadPropertyBoolean('with_swap');
+
         $vpos = 0;
         // Hostname
         $this->MaintainVariable('Hostname', $this->Translate('Hostname'), VARIABLETYPE_STRING, '', $vpos++, true);
@@ -91,8 +95,8 @@ class ServerInfo extends IPSModule
         $this->MaintainVariable('MemFree', $this->Translate('Free memory'), VARIABLETYPE_FLOAT, 'ServerInfo.MB', $vpos++, true);
         $this->MaintainVariable('MemAvailable', $this->Translate('Available memory'), VARIABLETYPE_FLOAT, 'ServerInfo.MB', $vpos++, true);
         // Swap
-        $this->MaintainVariable('SwapTotal', $this->Translate('Total swap-space'), VARIABLETYPE_FLOAT, 'ServerInfo.MB', $vpos++, true);
-        $this->MaintainVariable('SwapFree', $this->Translate('Free swap-space'), VARIABLETYPE_FLOAT, 'ServerInfo.MB', $vpos++, true);
+        $this->MaintainVariable('SwapTotal', $this->Translate('Total swap-space'), VARIABLETYPE_FLOAT, 'ServerInfo.MB', $vpos++, $with_swap);
+        $this->MaintainVariable('SwapFree', $this->Translate('Free swap-space'), VARIABLETYPE_FLOAT, 'ServerInfo.MB', $vpos++, $with_swap);
         // CPU
         $this->MaintainVariable('CpuModel', $this->Translate('Model of cpu'), VARIABLETYPE_STRING, '', $vpos++, true);
         $this->MaintainVariable('CpuCurFrequency', $this->Translate('Current cpu-frequency'), VARIABLETYPE_INTEGER, 'ServerInfo.Frequency', $vpos++, true);
@@ -177,29 +181,41 @@ class ServerInfo extends IPSModule
 
         $cntName = ['1st', '2nd', '3rd', '4th'];
 
-        $formElements[] = [
-            'type'    => 'Label',
-            'caption' => 'Partitions to be monitored'
-        ];
+        $items = [];
         for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
-            $formElements[] = [
+            $items[] = [
                 'type'    => 'ValidationTextBox',
                 'name'    => 'partition' . $cnt . '_device',
                 'caption' => $cntName[$cnt] . ' partition'
             ];
         }
-
         $formElements[] = [
-            'type'    => 'Label',
-            'caption' => 'Disks to be monitored'
+            'type'      => 'ExpansionPanel',
+            'caption'   => 'Partitions to be monitored',
+            'expanded ' => false,
+            'items'     => $items
         ];
+
+        $items = [];
         for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
-            $formElements[] = [
+            $items[] = [
                 'type'    => 'ValidationTextBox',
                 'name'    => 'disk' . $cnt . '_device',
                 'caption' => $cntName[$cnt] . ' disk'
             ];
         }
+        $formElements[] = [
+            'type'      => 'ExpansionPanel',
+            'caption'   => 'Disks to be monitored',
+            'expanded ' => false,
+            'items'     => $items
+        ];
+
+        $formElements[] = [
+            'type'    => 'CheckBox',
+            'name'    => 'with_swap',
+            'caption' => 'Show swap-space'
+        ];
 
         $formElements[] = [
             'type'    => 'Label',
@@ -386,11 +402,14 @@ class ServerInfo extends IPSModule
         $this->SetValue('MemFree', $MemFree);
         $this->SetValue('MemAvailable', $MemAvailable);
 
-        $SwapTotal = isset($v['SwapTotal']) ? $v['SwapTotal'] : 0;
-        $SwapFree = isset($v['SwapFree']) ? $v['SwapFree'] : 0;
-        $this->SendDebug(__FUNCTION__, 'SwapTotal=' . $SwapTotal . ', SwapFree=' . $SwapFree, 0);
-        $this->SetValue('SwapTotal', $SwapTotal);
-        $this->SetValue('SwapFree', $SwapFree);
+        $with_swap = $this->ReadPropertyBoolean('with_swap');
+        if ($with_swap) {
+            $SwapTotal = isset($v['SwapTotal']) ? $v['SwapTotal'] : 0;
+            $SwapFree = isset($v['SwapFree']) ? $v['SwapFree'] : 0;
+            $this->SendDebug(__FUNCTION__, 'SwapTotal=' . $SwapTotal . ', SwapFree=' . $SwapFree, 0);
+            $this->SetValue('SwapTotal', $SwapTotal);
+            $this->SetValue('SwapFree', $SwapFree);
+        }
 
         return true;
     }

@@ -86,7 +86,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.10 @ 29.08.2020 14:53 (beta)
+- 1.10 @ 30.08.2020 12:40 (beta)
   - LICENSE.md hinzugefügt
   - lokale Funktionen aus common.php in locale.php verlagert
   - Traits des Moduls haben nun Postfix "Lib"
@@ -97,7 +97,7 @@ GUIDs
   - Temperaturüberwachung der Festplatten nur durchführen, wenn Festplatten eingetragen sind; damit ist das Programm "hddtemp" in dem Fall auch keine Voraussetzung mehr.
   - Ergänzung um die Platformen "SymBox" und "Docker"
   - Anzahl der Festplatten und Partitionen von 2 auf 4 erhöht
-  - Information zu dem Auslagerungsbereich (SwapTotal, SwapFree) hinzugefügt
+  - optionale Information zu dem Auslagerungsbereich (SwapTotal, SwapFree) hinzugefügt
 
 - 1.9 @ 30.12.2019 10:56
   - Anpassungen an IPS 5.3
