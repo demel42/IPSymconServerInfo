@@ -527,6 +527,8 @@ class ServerInfo extends IPSModule
             }
             foreach ($res as $r) {
                 $s = preg_split("/[\s]+/", $r);
+                $this->SendDebug(__FUNCTION__, ' ... ' . print_r($s, true), 0);
+
                 if (count($s) < 6) {
                     $this->SendDebug(__FUNCTION__, 'bad data: ' . $r, 0);
                     continue;
@@ -639,7 +641,13 @@ class ServerInfo extends IPSModule
             }
             switch ($sys) {
             case 'Ubuntu':
-                $CpuModel = isset($v['Modellname']) ? $v['Modellname'] : '';
+                if (isset($v['Modellname'])) {
+                    $CpuModel = $v['Modellname'];
+                } elseif (isset($v['Model name'])) {
+                    $CpuModel = $v['Model name'];
+                } else {
+                    $CpuModel = '';
+                }
                 $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
                 $CpuCurFrequency = isset($v['CPU MHz']) ? $v['CPU MHz'] : 0;
                 break;

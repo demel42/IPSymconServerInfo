@@ -86,8 +86,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.11 @ 18.12.2020 14:57 (beta)
+- 1.11 @ 14.07.2021 17:26 (beta)
   - PHP_CS_FIXER_IGNORE_ENV=1 in github/workflows/style.yml eingefügt
+  - Ermittlung von "CPU-Name" verbessert
 
 - 1.10 @ 30.08.2020 12:40
   - LICENSE.md hinzugefügt
