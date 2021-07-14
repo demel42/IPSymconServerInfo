@@ -86,7 +86,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.11 @ 14.07.2021 17:26 (beta)
+- 1.11 @ 14.07.2021 17:26
   - PHP_CS_FIXER_IGNORE_ENV=1 in github/workflows/style.yml eingefügt
   - Ermittlung von "CPU-Name" verbessert
   - Schalter "Instanz ist deaktiviert" umbenannt in "Instanz deaktivieren"
