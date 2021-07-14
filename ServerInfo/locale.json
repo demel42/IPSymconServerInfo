@@ -1,7 +1,7 @@
 {
 	"translations": {
 		"de": {
-			"Instance is disabled": "Instanz ist deaktiviert",
+			"Disable instance": "Instanz deaktivieren",
 
 			"Partitions to be monitored": "zu kontrollierende Partitionen",
 			"1st partition": "1. Partition",

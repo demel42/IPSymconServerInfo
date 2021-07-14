@@ -176,7 +176,7 @@ class ServerInfo extends IPSModule
         $formElements[] = [
             'type'    => 'CheckBox',
             'name'    => 'module_disable',
-            'caption' => 'Instance is disabled'
+            'caption' => 'Disable instance'
         ];
 
         $cntName = ['1st', '2nd', '3rd', '4th'];
