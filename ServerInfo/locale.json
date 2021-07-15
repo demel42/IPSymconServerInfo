@@ -24,7 +24,7 @@
 			"Module description": "Modulbeschreibung",
 
 			"The following system prerequisites are missing": "Folgende Systemvoraussetzungen fehlen",
-			"supported OS": "unterstütztes Betriebsystem",
+			"supported OS (at this moment only: ": "unterstütztes Betriebsystem (zur Zeit nur ",
 
 			"Hostname": "Hostname",
 
