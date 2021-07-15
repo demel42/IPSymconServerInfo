@@ -64,7 +64,7 @@ In IP-Symcon nun _Instanz hinzufügen_ (_CTRL+1_) auswählen unter der Kategorie
 
 | Eigenschaft               | Typ     | Standardwert | Beschreibung |
 | :------------------------ | :------ | :----------- | :----------- |
-| Instanz ist deaktiviert   | boolean | false        | Instanz temporär deaktivieren |
+| Instanz deaktivieren      | boolean | false        | Instanz temporär deaktivieren |
 |                           |         |              | |
 | Aktualisiere Daten ...    | integer | 5            | Aktualisierungsintervall, Angabe in Minuten |
 |                           |         |              | |
