@@ -47,8 +47,12 @@ class ServerInfo extends IPSModule
         $s = '';
         $r = [];
 
+        if (IPS_GetKernelVersion() >= 6) {
+            $sysList = ['Ubuntu', 'Raspberry Pi', 'SymBox', 'Ubuntu (Docker)'];
+        } else {
+            $sysList = ['Ubuntu', 'Raspberry Pi', 'SymBox', 'Docker'];
+        }
         $sys = IPS_GetKernelPlatform();
-        $sysList = ['Ubuntu', 'Raspberry Pi', 'SymBox', 'Docker'];
         if (!in_array($sys, $sysList)) {
             $r[] = $this->Translate('supported OS (at this moment only: ') . implode(', ', $sysList) . ')';
         }

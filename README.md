@@ -86,6 +86,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 1.12 @ 16.07.2021 14:47 (beta)
+  - Anpassungen an IPS 6.0
+    - "Docker" heisst nun "Docker (Ubuntu)"
+
 - 1.11 @ 15.07.2021 10:15
   - PHP_CS_FIXER_IGNORE_ENV=1 in github/workflows/style.yml eingefügt
   - Ermittlung von "CPU-Name" verbessert
