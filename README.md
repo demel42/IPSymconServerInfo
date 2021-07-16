@@ -86,7 +86,7 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.12 @ 16.07.2021 14:47 (beta)
+- 1.12 @ 16.07.2021 14:47
   - Anpassungen an IPS 6.0
     - "Docker" heisst nun "Docker (Ubuntu)"
 
