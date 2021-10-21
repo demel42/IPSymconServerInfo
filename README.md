@@ -86,9 +86,12 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 1.13 @ 21.10.2021 16:35
+  - es gibt nun auch "Raspberry Pi (Docker)"
+
 - 1.12 @ 16.07.2021 14:47
   - Anpassungen an IPS 6.0
-    - "Docker" heisst nun "Docker (Ubuntu)"
+    - "Docker" heisst nun "Ubuntu (Docker)"
 
 - 1.11 @ 15.07.2021 10:15
   - PHP_CS_FIXER_IGNORE_ENV=1 in github/workflows/style.yml eingefügt

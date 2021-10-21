@@ -48,7 +48,7 @@ class ServerInfo extends IPSModule
         $r = [];
 
         if (IPS_GetKernelVersion() >= 6) {
-            $sysList = ['Ubuntu', 'Raspberry Pi', 'SymBox', 'Ubuntu (Docker)'];
+            $sysList = ['Ubuntu', 'Raspberry Pi', 'SymBox', 'Ubuntu (Docker)', 'Raspberry Pi (Docker)'];
         } else {
             $sysList = ['Ubuntu', 'Raspberry Pi', 'SymBox', 'Docker'];
         }
@@ -342,6 +342,8 @@ class ServerInfo extends IPSModule
             }
             break;
         case 'Docker':
+        case 'Ubuntu (Docker)':
+        case 'Raspberry Pi (Docker)':
             $res = $this->execute('cat /etc/os-release');
             if ($res == '' || count($res) < 1) {
                 $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
@@ -628,6 +630,8 @@ class ServerInfo extends IPSModule
         case 'Ubuntu':
         case 'Raspberry Pi':
         case 'Docker':
+        case 'Ubuntu (Docker)':
+        case 'Raspberry Pi (Docker)':
             $res = $this->execute('lscpu');
             if ($res == '' || count($res) < 1) {
                 $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
@@ -670,6 +674,8 @@ class ServerInfo extends IPSModule
                 }
                 break;
             case 'Docker':
+            case 'Ubuntu (Docker)':
+            case 'Raspberry Pi (Docker)':
                 $CpuModel = isset($v['Model name']) ? $v['Model name'] : '';
                 $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
                 $CpuCurFrequency = isset($v['CPU MHz']) ? $v['CPU MHz'] : 0;
