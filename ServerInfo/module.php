@@ -227,7 +227,7 @@ class ServerInfo extends IPSModule
             'caption' => 'Update data every X minutes'
         ];
         $formElements[] = [
-            'type'    => 'IntervalBox',
+            'type'    => 'NumberSpinner',
             'name'    => 'update_interval',
             'caption' => 'Minutes'
         ];
