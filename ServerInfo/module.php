@@ -2,15 +2,24 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../libs/common.php';  // globale Funktionen
-require_once __DIR__ . '/../libs/local.php';   // lokale Funktionen
+require_once __DIR__ . '/../libs/common.php';
+require_once __DIR__ . '/../libs/local.php';
 
 class ServerInfo extends IPSModule
 {
-    use ServerInfoCommonLib;
+    use ServerInfo\StubsCommonLib;
     use ServerInfoLocalLib;
 
     public static $NUM_DEVICE = 4;
+
+    private $ModuleDir;
+
+    public function __construct(string $InstanceID)
+    {
+        parent::__construct($InstanceID);
+
+        $this->ModuleDir = __DIR__;
+    }
 
     public function Create()
     {
@@ -31,20 +40,26 @@ class ServerInfo extends IPSModule
 
         $this->RegisterPropertyInteger('update_interval', '0');
 
-        $this->RegisterTimer('UpdateData', 0, 'ServerInfo_UpdateData(' . $this->InstanceID . ');');
+        $this->RegisterAttributeString('UpdateInfo', '');
 
-        $this->CreateVarProfile('ServerInfo.Frequency', VARIABLETYPE_INTEGER, ' MHz', 0, 0, 0, 0, '');
-        $this->CreateVarProfile('ServerInfo.MB', VARIABLETYPE_FLOAT, ' MB', 0, 0, 0, 0, '');
-        $this->CreateVarProfile('ServerInfo.GB', VARIABLETYPE_FLOAT, ' GB', 0, 0, 0, 0, '');
-        $this->CreateVarProfile('ServerInfo.Usage', VARIABLETYPE_FLOAT, ' %', 0, 0, 0, 1, '');
-        $this->CreateVarProfile('ServerInfo.Duration', VARIABLETYPE_INTEGER, ' sec', 0, 0, 0, 0, '');
-        $this->CreateVarProfile('ServerInfo.Temperature', VARIABLETYPE_FLOAT, ' °C', 0, 0, 0, 0, '');
-        $this->CreateVarProfile('ServerInfo.Load', VARIABLETYPE_FLOAT, '', 0, 0, 0, 2, '');
+        $this->InstallVarProfiles(false);
+
+        $this->RegisterTimer('UpdateData', 0, $this->GetModulePrefix() . '_UpdateData(' . $this->InstanceID . ');');
+
+        $this->RegisterMessage(0, IPS_KERNELMESSAGE);
     }
 
-    private function CheckPrerequisites()
+    public function MessageSink($tstamp, $senderID, $message, $data)
     {
-        $s = '';
+        parent::MessageSink($tstamp, $senderID, $message, $data);
+
+        if ($message == IPS_KERNELMESSAGE && $data[0] == KR_READY) {
+            // $this->UpdateStatus();
+        }
+    }
+
+    private function CheckModulePrerequisites()
+    {
         $r = [];
 
         if (IPS_GetKernelVersion() >= 6) {
@@ -62,22 +77,38 @@ class ServerInfo extends IPSModule
             if ($device != '') {
                 $data = exec('hddtemp --version 2>&1', $output, $exitcode);
                 if ($exitcode != 0) {
-                    $r[] = 'hddtemp';
+                    $r[] = $this->Translate('missing utility "hddtemp"');
                 }
                 break;
             }
         }
 
-        if ($r != []) {
-            $s = $this->Translate('The following system prerequisites are missing') . ': ' . implode(', ', $r);
-        }
-
-        return $s;
+        return $r;
     }
 
     public function ApplyChanges()
     {
         parent::ApplyChanges();
+
+        $this->MaintainReferences();
+
+        if ($this->CheckPrerequisites() != false) {
+            $this->MaintainTimer('UpdateData', 0);
+            $this->SetStatus(self::$IS_INVALIDPREREQUISITES);
+            return;
+        }
+
+        if ($this->CheckUpdate() != false) {
+            $this->MaintainTimer('UpdateData', 0);
+            $this->SetStatus(self::$IS_UPDATEUNCOMPLETED);
+            return;
+        }
+
+        if ($this->CheckConfiguration() != false) {
+            $this->MaintainTimer('UpdateData', 0);
+            $this->SetStatus(self::$IS_INVALIDCONFIG);
+            return;
+        }
 
         $with_swap = $this->ReadPropertyBoolean('with_swap');
 
@@ -131,57 +162,32 @@ class ServerInfo extends IPSModule
 
         $this->MaintainVariable('LastUpdate', $this->Translate('Last update'), VARIABLETYPE_INTEGER, '~UnixTimestamp', $vpos++, true);
 
-        $s = $this->CheckPrerequisites();
-        if ($s != '') {
-            $this->SetTimerInterval('UpdateData', 0);
-            $this->SetStatus(self::$IS_INVALIDPREREQUISITES);
-            $this->LogMessage($s, KL_WARNING);
-            return;
-        }
-
         $module_disable = $this->ReadPropertyBoolean('module_disable');
         if ($module_disable) {
-            $this->SetTimerInterval('UpdateData', 0);
+            $this->MaintainTimer('UpdateData', 0);
             $this->SetStatus(IS_INACTIVE);
             return;
         }
 
         $this->SetStatus(IS_ACTIVE);
-        $this->SetUpdateInterval();
-    }
 
-    public function GetConfigurationForm()
-    {
-        $formElements = $this->GetFormElements();
-        $formActions = $this->GetFormActions();
-        $formStatus = $this->GetFormStatus();
-
-        $form = json_encode(['elements' => $formElements, 'actions' => $formActions, 'status' => $formStatus]);
-        if ($form == '') {
-            $this->SendDebug(__FUNCTION__, 'json_error=' . json_last_error_msg(), 0);
-            $this->SendDebug(__FUNCTION__, '=> formElements=' . print_r($formElements, true), 0);
-            $this->SendDebug(__FUNCTION__, '=> formActions=' . print_r($formActions, true), 0);
-            $this->SendDebug(__FUNCTION__, '=> formStatus=' . print_r($formStatus, true), 0);
+        if (IPS_GetKernelRunlevel() == KR_READY) {
+            $this->SetUpdateInterval();
         }
-        return $form;
     }
 
     private function GetFormElements()
     {
-        $formElements = [];
+        $formElements = $this->GetCommonFormElements('Server information');
 
-        $s = $this->CheckPrerequisites();
-        if ($s != '') {
-            $formElements[] = [
-                'type'    => 'Label',
-                'caption' => $s
-            ];
+        if ($this->GetStatus() == self::$IS_UPDATEUNCOMPLETED) {
+            return $formElements;
         }
 
         $formElements[] = [
-            'type'    => 'CheckBox',
             'name'    => 'module_disable',
-            'caption' => 'Disable instance'
+            'type'    => 'CheckBox',
+            'caption' => 'Disable instance',
         ];
 
         $cntName = ['1st', '2nd', '3rd', '4th'];
@@ -196,9 +202,9 @@ class ServerInfo extends IPSModule
         }
         $formElements[] = [
             'type'      => 'ExpansionPanel',
-            'caption'   => 'Partitions to be monitored',
+            'items'     => $items,
             'expanded ' => false,
-            'items'     => $items
+            'caption'   => 'Partitions to be monitored',
         ];
 
         $items = [];
@@ -211,9 +217,9 @@ class ServerInfo extends IPSModule
         }
         $formElements[] = [
             'type'      => 'ExpansionPanel',
-            'caption'   => 'Disks to be monitored',
+            'items'     => $items,
             'expanded ' => false,
-            'items'     => $items
+            'caption'   => 'Disks to be monitored',
         ];
 
         $formElements[] = [
@@ -223,13 +229,11 @@ class ServerInfo extends IPSModule
         ];
 
         $formElements[] = [
-            'type'    => 'Label',
-            'caption' => 'Update data every X minutes'
-        ];
-        $formElements[] = [
-            'type'    => 'NumberSpinner',
             'name'    => 'update_interval',
-            'caption' => 'Minutes'
+            'type'    => 'NumberSpinner',
+            'minimum' => 0,
+            'suffix'  => 'Minutes',
+            'caption' => 'Update interval'
         ];
 
         return $formElements;
@@ -239,20 +243,57 @@ class ServerInfo extends IPSModule
     {
         $formActions = [];
 
+        if ($this->GetStatus() == self::$IS_UPDATEUNCOMPLETED) {
+            $formActions[] = $this->GetCompleteUpdateFormAction();
+
+            $formActions[] = $this->GetInformationFormAction();
+            $formActions[] = $this->GetReferencesFormAction();
+
+            return $formActions;
+        }
+
         $formActions[] = [
             'type'    => 'Button',
+            'onClick' => $this->GetModulePrefix() . '_UpdateData($id);',
             'caption' => 'Update data',
-            'onClick' => 'ServerInfo_UpdateData($id);'
         ];
 
+        $formActions[] = [
+            'type'      => 'ExpansionPanel',
+            'caption'   => 'Expert area',
+            'expanded ' => false,
+            'items'     => [
+                [
+                    'type'    => 'Button',
+                    'caption' => 'Re-install variable-profiles',
+                    'onClick' => $this->GetModulePrefix() . '_InstallVarProfiles($id, true);'
+                ],
+            ],
+        ];
+
+        $formActions[] = $this->GetInformationFormAction();
+        $formActions[] = $this->GetReferencesFormAction();
+
         return $formActions;
+    }
+
+    public function RequestAction($ident, $value)
+    {
+        if ($this->CommonRequestAction($ident, $value)) {
+            return;
+        }
+        switch ($ident) {
+            default:
+                $this->SendDebug(__FUNCTION__, 'invalid ident ' . $ident, 0);
+                break;
+        }
     }
 
     protected function SetUpdateInterval()
     {
         $min = $this->ReadPropertyInteger('update_interval');
         $msec = $min > 0 ? $min * 1000 * 60 : 0;
-        $this->SetTimerInterval('UpdateData', $msec);
+        $this->MaintainTimer('UpdateData', $msec);
     }
 
     public function UpdateData()

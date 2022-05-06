@@ -1,0 +1,10 @@
+{
+	"translations": {
+		"de": {
+			"__function__": "CheckPrerequisites",
+			"supported OS (at this moment only: ": "unterstütztes Betriebsystem (zur Zeit nur ",
+
+			"__end__": ""
+		}
+	}
+}

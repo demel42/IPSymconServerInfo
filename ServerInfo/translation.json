@@ -1,6 +1,13 @@
 {
 	"translations": {
 		"de": {
+			"Server information": "Server-Information",
+
+			"__function__": "CheckPrerequisites",
+			"supported OS (at this moment only: ": "unterstütztes Betriebsystem (zur Zeit nur ",
+			"missing utility \"hddtemp\"": "fehlendes Dienstprogramm \"hddtemp\"",
+
+			"__elements__": "",
 			"Disable instance": "Instanz deaktivieren",
 
 			"Partitions to be monitored": "zu kontrollierende Partitionen",
@@ -17,15 +24,10 @@
 
 			"Show swap-space": "Auslagerungsbereich anzeigen",
 
-			"Update data every X minutes": "Aktualisiere Daten alle X Minuten",
+			"Update interval": "Aktualisierungsintervall",
 			"Minutes": "Minuten",
 
-			"Update data": "Aktualisiere Daten",
-			"Module description": "Modulbeschreibung",
-
-			"The following system prerequisites are missing": "Folgende Systemvoraussetzungen fehlen",
-			"supported OS (at this moment only: ": "unterstütztes Betriebsystem (zur Zeit nur ",
-
+			"__variables__": "",
 			"Hostname": "Hostname",
 
 			"Operating system": "Betriebssystem",
@@ -82,13 +84,10 @@
 
 			"Last update": "Letzte Aktualisierung",
 
-			"Instance getting created": "Instanz wird erstellt",
-			"Instance is active": "Instanz ist aktiv",
-			"Instance is deleted": "Instanz wird gelöscht",
-			"Instance is inactive": "Instanz ist inaktiv",
-			"Instance is not created": "Instanz wurde nicht erzeugt",
+			"__actions__": "",
+			"Update data": "Aktualisiere Daten",
 
-			"Instance is inactive (invalid preconditions)": "Instanz ist inaktiv (ungültige Voraussetzungen)"
+			"__end__": ""
 		}
 	}
 }
