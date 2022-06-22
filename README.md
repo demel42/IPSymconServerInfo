@@ -85,6 +85,14 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 1.15 @ 22.06.2022 09:57
+  - Fix: der Update-Timer wurde initial nicht mehr gesetzt
+  - Fix: Angabe der Kompatibilität auf 6.2 korrigiert
+  - update submodule CommonStubs
+    Fix: Ausgabe des nächsten Timer-Zeitpunkts
+  - interne Funktionen sind nun private und ggfs nur noch via IPS_RequestAction() erreichbar
+  - Fix: Angabe der Kompatibilität auf 6.2 korrigiert
+
 - 1.14.1 @ 17.05.2022 15:38
   - update submodule CommonStubs
     Fix: Absicherung gegen fehlende Objekte

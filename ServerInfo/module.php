@@ -44,7 +44,7 @@ class ServerInfo extends IPSModule
 
         $this->InstallVarProfiles(false);
 
-        $this->RegisterTimer('UpdateData', 0, $this->GetModulePrefix() . '_UpdateData(' . $this->InstanceID . ');');
+        $this->RegisterTimer('UpdateData', 0, 'IPS_RequestAction(' . $this->InstanceID . ', "UpdateData", "");');
 
         $this->RegisterMessage(0, IPS_KERNELMESSAGE);
     }
@@ -54,7 +54,7 @@ class ServerInfo extends IPSModule
         parent::MessageSink($tstamp, $senderID, $message, $data);
 
         if ($message == IPS_KERNELMESSAGE && $data[0] == KR_READY) {
-            // $this->UpdateStatus();
+            $this->SetUpdateInterval();
         }
     }
 
@@ -254,8 +254,8 @@ class ServerInfo extends IPSModule
 
         $formActions[] = [
             'type'    => 'Button',
-            'onClick' => $this->GetModulePrefix() . '_UpdateData($id);',
             'caption' => 'Update data',
+            'onClick' => 'IPS_RequestAction(' . $this->InstanceID . ', "UpdateData", "");',
         ];
 
         $formActions[] = [
@@ -263,11 +263,7 @@ class ServerInfo extends IPSModule
             'caption'   => 'Expert area',
             'expanded ' => false,
             'items'     => [
-                [
-                    'type'    => 'Button',
-                    'caption' => 'Re-install variable-profiles',
-                    'onClick' => $this->GetModulePrefix() . '_InstallVarProfiles($id, true);'
-                ],
+                $this->GetInstallVarProfilesFormItem(),
             ],
         ];
 
@@ -283,20 +279,23 @@ class ServerInfo extends IPSModule
             return;
         }
         switch ($ident) {
+            case 'UpdateData':
+                $this->UpdateData();
+                break;
             default:
                 $this->SendDebug(__FUNCTION__, 'invalid ident ' . $ident, 0);
                 break;
         }
     }
 
-    protected function SetUpdateInterval()
+    private function SetUpdateInterval()
     {
         $min = $this->ReadPropertyInteger('update_interval');
         $msec = $min > 0 ? $min * 1000 * 60 : 0;
         $this->MaintainTimer('UpdateData', $msec);
     }
 
-    public function UpdateData()
+    private function UpdateData()
     {
         if ($this->CheckStatus() == self::$STATUS_INVALID) {
             $this->SendDebug(__FUNCTION__, $this->GetStatusText() . ' => skip', 0);

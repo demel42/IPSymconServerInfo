@@ -4,9 +4,9 @@
 	"name": "Linux-Server-Info",
 	"url": "https://github.com/demel42/IPSymconServerInfo",
 	"compatibility": {
-		"version": "6.0"
+		"version": "6.2"
 	},
-	"version": "1.14.1",
+	"version": "1.15",
 	"build": 0,
-	"date": 1652794739
+	"date": 1655884626
 }
