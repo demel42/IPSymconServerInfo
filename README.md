@@ -85,6 +85,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 1.16 @ 05.07.2022 15:44
+  - Verbesserung: IPS-Status wird nur noch gesetzt, wenn er sich ändert
+
 - 1.15 @ 22.06.2022 09:57
   - Fix: der Update-Timer wurde initial nicht mehr gesetzt
   - Fix: Angabe der Kompatibilität auf 6.2 korrigiert
