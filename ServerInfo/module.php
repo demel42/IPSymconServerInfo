@@ -203,7 +203,7 @@ class ServerInfo extends IPSModule
         $formElements[] = [
             'type'      => 'ExpansionPanel',
             'items'     => $items,
-            'expanded ' => false,
+            'expanded'  => false,
             'caption'   => 'Partitions to be monitored',
         ];
 
@@ -218,7 +218,7 @@ class ServerInfo extends IPSModule
         $formElements[] = [
             'type'      => 'ExpansionPanel',
             'items'     => $items,
-            'expanded ' => false,
+            'expanded'  => false,
             'caption'   => 'Disks to be monitored',
         ];
 
@@ -261,7 +261,7 @@ class ServerInfo extends IPSModule
         $formActions[] = [
             'type'      => 'ExpansionPanel',
             'caption'   => 'Expert area',
-            'expanded ' => false,
+            'expanded'  => false,
             'items'     => [
                 $this->GetInstallVarProfilesFormItem(),
             ],
