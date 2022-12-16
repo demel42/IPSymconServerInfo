@@ -30,9 +30,13 @@ class ServerInfo extends IPSModule
         $this->RegisterPropertyBoolean('with_swap', true);
 
         $this->RegisterPropertyString('partition0_device', '');
+        $this->RegisterPropertyInteger('partition0_unit', self::$UNIT_GB);
         $this->RegisterPropertyString('partition1_device', '');
+        $this->RegisterPropertyInteger('partition1_unit', self::$UNIT_GB);
         $this->RegisterPropertyString('partition2_device', '');
+        $this->RegisterPropertyInteger('partition2_unit', self::$UNIT_GB);
         $this->RegisterPropertyString('partition3_device', '');
+        $this->RegisterPropertyInteger('partition3_unit', self::$UNIT_GB);
         $this->RegisterPropertyString('disk0_device', '');
         $this->RegisterPropertyString('disk1_device', '');
         $this->RegisterPropertyString('disk2_device', '');
@@ -151,12 +155,14 @@ class ServerInfo extends IPSModule
 
         for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
             $dev = $this->ReadPropertyString('partition' . $cnt . '_device');
+            $unit = $this->ReadPropertyInteger('partition' . $cnt . '_unit');
+            $varprof = $this->Unit2Varprof($unit);
             $pfx = 'Partition' . $cnt;
             $cn = $cntName[$cnt];
             $this->MaintainVariable($pfx . 'Mountpoint', $this->Translate('Mountpoint of ' . $cn . ' partition'), VARIABLETYPE_STRING, '', $vpos++, $dev != '');
-            $this->MaintainVariable($pfx . 'Size', $this->Translate('Size of ' . $cn . ' partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $dev != '');
-            $this->MaintainVariable($pfx . 'Used', $this->Translate('Used space of ' . $cn . ' partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $dev != '');
-            $this->MaintainVariable($pfx . 'Available', $this->Translate('Available space of ' . $cn . ' partition'), VARIABLETYPE_FLOAT, 'ServerInfo.GB', $vpos++, $dev != '');
+            $this->MaintainVariable($pfx . 'Size', $this->Translate('Size of ' . $cn . ' partition'), VARIABLETYPE_FLOAT, $varprof, $vpos++, $dev != '');
+            $this->MaintainVariable($pfx . 'Used', $this->Translate('Used space of ' . $cn . ' partition'), VARIABLETYPE_FLOAT, $varprof, $vpos++, $dev != '');
+            $this->MaintainVariable($pfx . 'Available', $this->Translate('Available space of ' . $cn . ' partition'), VARIABLETYPE_FLOAT, $varprof, $vpos++, $dev != '');
             $this->MaintainVariable($pfx . 'Usage', $this->Translate('Usage of ' . $cn . ' partition'), VARIABLETYPE_FLOAT, 'ServerInfo.Usage', $vpos++, $dev != '');
         }
 
@@ -195,9 +201,26 @@ class ServerInfo extends IPSModule
         $items = [];
         for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
             $items[] = [
-                'type'    => 'ValidationTextBox',
-                'name'    => 'partition' . $cnt . '_device',
-                'caption' => $cntName[$cnt] . ' partition'
+                'type'    => 'RowLayout',
+                'items'   => [
+                    [
+                        'type'    => 'Label',
+                        'caption' => $cntName[$cnt] . ' partition',
+                    ],
+                    [
+                        'type'    => 'ValidationTextBox',
+                        'name'    => 'partition' . $cnt . '_device',
+                        'caption' => 'device',
+                        'width'   => '500px',
+                    ],
+                    [
+                        'type'    => 'Select',
+                        'options' => $this->UnitAsOptions(),
+                        'name'    => 'partition' . $cnt . '_unit',
+                        'caption' => 'unit',
+                        'width'   => '100px',
+                    ],
+                ],
             ];
         }
         $formElements[] = [
@@ -560,6 +583,10 @@ class ServerInfo extends IPSModule
             if ($device == '') {
                 continue;
             }
+            $unit = $this->ReadPropertyInteger('partition' . $cnt . '_unit');
+            $factor = $this->Unit2Factor($unit);
+            $unitS = $this->Unit2String($unit);
+            $this->SendDebug(__FUNCTION__, 'cnt=' . $cnt . ', unit=' . $unit . ', factor=' . $factor, 0);
 
             $Mountpoint = '';
             $Size = 0;
@@ -581,9 +608,9 @@ class ServerInfo extends IPSModule
                     continue;
                 }
                 if ($s[0] == $device) {
-                    $Size = floor($s[1] / (1024 * 1024) * 10) / 10;
-                    $Used = floor($s[2] / (1024 * 1024) * 10) / 10;
-                    $Available = floor($s[3] / (1024 * 1024) * 10) / 10;
+                    $Size = floor($s[1] / $factor * 10) / 10;
+                    $Used = floor($s[2] / $factor * 10) / 10;
+                    $Available = floor($s[3] / $factor * 10) / 10;
                     if (preg_match('/([\d]*)/', $s[4], $q)) {
                         $Usage = $q[1];
                     }
@@ -591,7 +618,7 @@ class ServerInfo extends IPSModule
                 }
             }
 
-            $this->SendDebug(__FUNCTION__, 'partition ' . $cnt . '=' . $device . ': size=' . $Size . ' GB, used=' . $Used . ' GB, available=' . $Available . ' GB, ' . $Usage . '%' . ', mountpoint=' . $Mountpoint, 0);
+            $this->SendDebug(__FUNCTION__, 'partition ' . $cnt . '=' . $device . ': size=' . $Size . ' ' . $unitS . ', used=' . $Used . ' ' . $unitS . ', available=' . $Available . ' ' . $unitS . ', ' . $Usage . '%' . ', mountpoint=' . $Mountpoint, 0);
             $this->SetValue('Partition' . $cnt . 'Mountpoint', $Mountpoint);
             $this->SetValue('Partition' . $cnt . 'Size', $Size);
             $this->SetValue('Partition' . $cnt . 'Used', $Used);

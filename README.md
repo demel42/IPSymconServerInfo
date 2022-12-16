@@ -68,12 +68,15 @@ In IP-Symcon nun _Instanz hinzufügen_ (_CTRL+1_) auswählen unter der Kategorie
 | Aktualisiere Daten ...    | integer | 5            | Aktualisierungsintervall, Angabe in Minuten |
 |                           |         |              | |
 | Gerät für Partition ...   | string  | s.u.         | nur Patitionen mit Dateisystem |
+| ... Einheit               | integer | s.u.         | EInheit der Größenangabe (GB/MB) |
 | Gerät für Datenträger ... | string  | s.u.         | nur Datenträger mit S.M.A.R.T |
 
-| Betriebssystem | Partition 1 | Datenträger 1 |
-| :------------- | :---------- | :------------ |
-| Ubuntu         | /dev/sda1   | /dev/sda      |
-| Rasbian        | /dev/root   | nur unterstützt für HDD, keine SD-Karten (/dev/mmcblk0) oder USB-Sticks |
+| Betriebssystem | Partition 1     | Datenträger 1 |
+| :------------- | :-------------- | :------------ |
+| Ubuntu         | /dev/sda1       | /dev/sda      |
+| Rasbian        | /dev/root       | nur unterstützt für HDD, keine SD-Karten (/dev/mmcblk0) oder USB-Sticks |
+
+Bei einer Symbos ist _/dev/mmcblk0p2_ = _/mnt/system_ und _/dev/mmcblk0p3_ = _/mnt/data_; Datenträger werden hier nicht unterstützt.
 
 ## 6. Anhang
 
@@ -84,6 +87,10 @@ GUIDs
   - ServerInfo: `{99B3B506-0808-433A-9745-32CDD63BC307}`
 
 ## 7. Versions-Historie
+
+- 1.17 @ 16.12.2022 10:40
+  - Neu: Angabe der Einheit (GB/MB) der Partitionsgrößen
+  - update submodule CommonStubs
 
 - 1.16.1 @ 07.10.2022 13:59
   - update submodule CommonStubs

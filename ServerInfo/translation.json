@@ -15,6 +15,8 @@
 			"2nd partition": "2. Partition",
 			"3rd partition": "3. Partition",
 			"4th partition": "4. Partition",
+			"device": "Gerät",
+			"unit": "Einheit",
 
 			"Disks to be monitored" : "zu kontrollierende Datenträger",
 			"1st disk": "1. Festplatte",

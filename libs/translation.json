@@ -4,6 +4,11 @@
 			"__function__": "CheckPrerequisites",
 			"supported OS (at this moment only: ": "unterstütztes Betriebsystem (zur Zeit nur ",
 
+			"__options__": "unit",
+			"MB": "MB",
+			"GB": "GB",
+			"Unknown unit": "unbekannte Einheit",
+
 			"__end__": ""
 		}
 	}
