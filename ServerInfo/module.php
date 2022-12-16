@@ -586,7 +586,6 @@ class ServerInfo extends IPSModule
             $unit = $this->ReadPropertyInteger('partition' . $cnt . '_unit');
             $factor = $this->Unit2Factor($unit);
             $unitS = $this->Unit2String($unit);
-            $this->SendDebug(__FUNCTION__, 'cnt=' . $cnt . ', unit=' . $unit . ', factor=' . $factor, 0);
 
             $Mountpoint = '';
             $Size = 0;
