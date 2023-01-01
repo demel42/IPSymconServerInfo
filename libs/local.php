@@ -101,7 +101,7 @@ trait ServerInfoLocalLib
     {
         $maps = $this->UnitMapping();
         if (isset($maps[$unit])) {
-            $ret = $this->Translate($maps[$unit]['varprof']);
+            $ret = $maps[$unit]['varprof'];
         } else {
             $ret = '';
         }

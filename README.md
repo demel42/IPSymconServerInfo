@@ -88,6 +88,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 1.17.1 @ 01.01.2023 15:13
+  - Fix: es wurde versucht, die Bezeichnung des Variablenprofils zu übersetzen
+
 - 1.17 @ 16.12.2022 10:40
   - Neu: Angabe der Einheit (GB/MB) der Partitionsgrößen
   - update submodule CommonStubs
