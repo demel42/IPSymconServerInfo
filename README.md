@@ -88,7 +88,8 @@ GUIDs
 
 ## 7. Versions-Historie
 
-- 1.18 @ 30.06.2023 10:02
+- 1.18 @ 04.07.2023 14:36
+  - Vorbereitung auf IPS 7 / PHP 8.2
   - update submodule CommonStubs
     - Absicherung bei Zugriff auf Objekte und Inhalte
     - Vorbereitung auf IPS 7 / PHP 8.2

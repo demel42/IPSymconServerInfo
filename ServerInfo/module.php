@@ -357,7 +357,7 @@ class ServerInfo extends IPSModule
         }
 
         $this->SendDebug(__FUNCTION__, ' ... duration=' . $duration . ', exitcode=' . $exitcode . ', status=' . ($ok ? 'ok' : 'fail') . ', err=' . $err, 0);
-        $this->SendDebug(__FUNCTION__, ' ... output=' . utf8_decode(print_r($output, true)), 0);
+        $this->SendDebug(__FUNCTION__, ' ... output=' . print_r($output, true), 0);
 
         return $output;
     }
