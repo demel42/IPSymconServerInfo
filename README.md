@@ -92,7 +92,6 @@ GUIDs
   - Vorbereitung auf IPS 7 / PHP 8.2
   - update submodule CommonStubs
     - Absicherung bei Zugriff auf Objekte und Inhalte
-    - Vorbereitung auf IPS 7 / PHP 8.2
 
 - 1.17.1 @ 01.01.2023 15:13
   - Fix: es wurde versucht, die Bezeichnung des Variablenprofils zu übersetzen
