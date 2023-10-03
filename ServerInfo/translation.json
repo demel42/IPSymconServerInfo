@@ -92,8 +92,7 @@
 
 			"Daemon: CPU time since start": "Dämon: CPU-Zeit seit Start",
 			"Daemon: CPU time per hour": "Dämon: CPU-Zeit pro Stunde",
-			"Daemon: cpu usage": "Dämon: CPU-Nutzung",
-			"Daemon: cpu activity": "Dämon: CPU-Aktivität",
+			"Daemon: cpu usage": "Dämon: CPU-Ausnutzung",
 
 			"Last update": "Letzte Aktualisierung",
 
