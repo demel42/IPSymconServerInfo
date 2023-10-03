@@ -25,6 +25,8 @@
 			"4th disk": "4. Festplatte",
 
 			"Show swap-space": "Auslagerungsbereich anzeigen",
+			"Show cpu-temperature": "CPU-Temperatur anzeigen",
+			"Collate information of the symcon daemon": "Informationen des Symcon-Dämons zusammenstellen",
 
 			"Update interval": "Aktualisierungsintervall",
 			"Minutes": "Minuten",
@@ -83,6 +85,15 @@
 			"Used space of 4th partition": "Verwendeter Platz der 4. Partition",
 			"Available space of 4th partition": "Verfügbarer Platz der 4. Partition",
 			"Usage of 4th partition": "Ausnutzung der 4. Partition",
+
+			"Daemon: running": "Dämon: Laufzeit",
+			"Daemon: process size": "Dämon: Prozessgröße",
+			"Daemon: resident process size": "Dämon: residente Prozessgröße",
+
+			"Daemon: CPU time since start": "Dämon: CPU-Zeit seit Start",
+			"Daemon: CPU time per hour": "Dämon: CPU-Zeit pro Stunde",
+			"Daemon: cpu usage": "Dämon: CPU-Nutzung",
+			"Daemon: cpu activity": "Dämon: CPU-Aktivität",
 
 			"Last update": "Letzte Aktualisierung",
 

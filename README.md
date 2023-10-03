@@ -61,15 +61,19 @@ In IP-Symcon nun _Instanz hinzufügen_ (_CTRL+1_) auswählen unter der Kategorie
 
 ### Variablen
 
-| Eigenschaft               | Typ     | Standardwert | Beschreibung |
-| :------------------------ | :------ | :----------- | :----------- |
-| Instanz deaktivieren      | boolean | false        | Instanz temporär deaktivieren |
-|                           |         |              | |
-| Aktualisiere Daten ...    | integer | 5            | Aktualisierungsintervall, Angabe in Minuten |
-|                           |         |              | |
-| Gerät für Partition ...   | string  | s.u.         | nur Patitionen mit Dateisystem |
-| ... Einheit               | integer | s.u.         | EInheit der Größenangabe (GB/MB) |
-| Gerät für Datenträger ... | string  | s.u.         | nur Datenträger mit S.M.A.R.T |
+| Eigenschaft                  | Typ     | Standardwert | Beschreibung |
+| :------------------------    | :------ | :----------- | :----------- |
+| Instanz deaktivieren         | boolean | false        | Instanz temporär deaktivieren |
+|                              |         |              | |
+| Aktualisiere Daten ...       | integer | 5            | Aktualisierungsintervall, Angabe in Minuten |
+|                              |         |              | |
+| Gerät für Partition ...      | string  | s.u.         | nur Patitionen mit Dateisystem |
+| ... Einheit                  | integer | s.u.         | Einheit der Größenangabe (GB/MB) |
+| Gerät für Datenträger ...    | string  | s.u.         | nur Datenträger mit S.M.A.R.T |
+|                              |         |              | |
+| Auslagerungsbereich anzeigen | boolean | true         | Auslagerungsbereich anzeigen |
+| CPU-Temperatur anzeigen      | boolean | true         | CPU-Temperatur anzeigen |
+| Symcon-Prozess ...           | boolean | true         | |Informationen des symcon-Prozesses zusammenstellen |
 
 | Betriebssystem | Partition 1     | Datenträger 1 |
 | :------------- | :-------------- | :------------ |
@@ -87,6 +91,15 @@ GUIDs
   - ServerInfo: `{99B3B506-0808-433A-9745-32CDD63BC307}`
 
 ## 7. Versions-Historie
+
+- 1.20 @ 03.10.2023 14:36
+  - Neu: Ermittlung von Speicherbedarf und Laufzeit (aktuell und für 31 Tage) und Anzeige im Panel "Information"
+  - update submodule CommonStubs
+
+- 1.19 @ 30.08.2023 11:00
+  - Neu: Informationen zum Symcon-Prozess (Laufzeit, Memory- und CPU-Nutzung)
+  - Fix: Korrektur der Berechnung der lesbaren Darstellung der Uptime
+  - update submodule CommonStubs
 
 - 1.18 @ 04.07.2023 14:36
   - Vorbereitung auf IPS 7 / PHP 8.2

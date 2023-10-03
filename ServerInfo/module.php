@@ -12,13 +12,16 @@ class ServerInfo extends IPSModule
 
     public static $NUM_DEVICE = 4;
 
-    private $ModuleDir;
-
     public function __construct(string $InstanceID)
     {
         parent::__construct($InstanceID);
 
-        $this->ModuleDir = __DIR__;
+        $this->CommonContruct(__DIR__);
+    }
+
+    public function __destruct()
+    {
+        $this->CommonDestruct();
     }
 
     public function Create()
@@ -28,6 +31,8 @@ class ServerInfo extends IPSModule
         $this->RegisterPropertyBoolean('module_disable', false);
 
         $this->RegisterPropertyBoolean('with_swap', true);
+        $this->RegisterPropertyBoolean('with_cputemp', true);
+        $this->RegisterPropertyBoolean('with_symcon', true);
 
         $this->RegisterPropertyString('partition0_device', '');
         $this->RegisterPropertyInteger('partition0_unit', self::$UNIT_GB);
@@ -44,7 +49,8 @@ class ServerInfo extends IPSModule
 
         $this->RegisterPropertyInteger('update_interval', '0');
 
-        $this->RegisterAttributeString('UpdateInfo', '');
+        $this->RegisterAttributeString('UpdateInfo', json_encode([]));
+        $this->RegisterAttributeString('ModuleStats', json_encode([]));
 
         $this->InstallVarProfiles(false);
 
@@ -115,6 +121,8 @@ class ServerInfo extends IPSModule
         }
 
         $with_swap = $this->ReadPropertyBoolean('with_swap');
+        $with_cputemp = $this->ReadPropertyBoolean('with_cputemp');
+        $with_symcon = $this->ReadPropertyBoolean('with_symcon');
 
         $vpos = 0;
         // Hostname
@@ -143,7 +151,7 @@ class ServerInfo extends IPSModule
         $this->MaintainVariable('CpuCount', $this->Translate('Number of cpu-cores'), VARIABLETYPE_INTEGER, '', $vpos++, true);
         $this->MaintainVariable('CpuUsage', $this->Translate('Usage of cpu'), VARIABLETYPE_FLOAT, 'ServerInfo.Usage', $vpos++, true);
         // Temperatur
-        $this->MaintainVariable('CpuTemp', $this->Translate('Temperatur of cpu'), VARIABLETYPE_FLOAT, 'ServerInfo.Temperature', $vpos++, true);
+        $this->MaintainVariable('CpuTemp', $this->Translate('Temperatur of cpu'), VARIABLETYPE_FLOAT, 'ServerInfo.Temperature', $vpos++, $with_cputemp);
 
         $cntName = ['1st', '2nd', '3rd', '4th'];
         for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
@@ -166,6 +174,19 @@ class ServerInfo extends IPSModule
             $this->MaintainVariable($pfx . 'Usage', $this->Translate('Usage of ' . $cn . ' partition'), VARIABLETYPE_FLOAT, 'ServerInfo.Usage', $vpos++, $dev != '');
         }
 
+        // Symcon daemon
+        $vpos = 100;
+        $this->MaintainVariable('Daemon_Running', $this->Translate('Daemon: running'), VARIABLETYPE_INTEGER, 'ServerInfo.Duration', $vpos++, $with_symcon);
+        $this->MaintainVariable('Daemon_Running_Pretty', $this->Translate('Daemon: running'), VARIABLETYPE_STRING, '', $vpos++, $with_symcon);
+
+        $this->MaintainVariable('Daemon_MemSize', $this->Translate('Daemon: process size'), VARIABLETYPE_FLOAT, 'ServerInfo.MB', $vpos++, $with_symcon);
+        $this->MaintainVariable('Daemon_MemResident', $this->Translate('Daemon: resident process size'), VARIABLETYPE_FLOAT, 'ServerInfo.MB', $vpos++, $with_symcon);
+
+        $this->MaintainVariable('Daemon_CpuUsedTotal', $this->Translate('Daemon: CPU time since start'), VARIABLETYPE_INTEGER, 'ServerInfo.Duration', $vpos++, $with_symcon);
+        $this->MaintainVariable('Daemon_CpuUsedHourly', $this->Translate('Daemon: CPU time per hour'), VARIABLETYPE_INTEGER, 'ServerInfo.Duration', $vpos++, $with_symcon);
+        $this->MaintainVariable('Daemon_CpuUsage', $this->Translate('Daemon: cpu usage'), VARIABLETYPE_FLOAT, 'ServerInfo.Usage', $vpos++, $with_symcon);
+
+        $vpos = 200;
         $this->MaintainVariable('LastUpdate', $this->Translate('Last update'), VARIABLETYPE_INTEGER, '~UnixTimestamp', $vpos++, true);
 
         $module_disable = $this->ReadPropertyBoolean('module_disable');
@@ -252,6 +273,18 @@ class ServerInfo extends IPSModule
         ];
 
         $formElements[] = [
+            'type'    => 'CheckBox',
+            'name'    => 'with_cputemp',
+            'caption' => 'Show cpu-temperature'
+        ];
+
+        $formElements[] = [
+            'type'    => 'CheckBox',
+            'name'    => 'with_symcon',
+            'caption' => 'Collate information of the symcon daemon'
+        ];
+
+        $formElements[] = [
             'name'    => 'update_interval',
             'type'    => 'NumberSpinner',
             'minimum' => 0,
@@ -335,6 +368,7 @@ class ServerInfo extends IPSModule
         $this->get_hddtemp();
         $this->get_cpuinfo();
         $this->get_cpuload();
+        $this->get_symcon();
 
         $this->SetValue('LastUpdate', time());
     }
@@ -539,9 +573,9 @@ class ServerInfo extends IPSModule
 
         $Uptime = $sec;
         $Uptime_Pretty = '';
-        if ($sec > 84600) {
-            $day = floor($sec / 84600);
-            $sec = $sec % 84600;
+        if ($sec > 86400) {
+            $day = floor($sec / 86400);
+            $sec = $sec % 86400;
 
             $sec -= floor($sec % 60);
             if ($day > 3) {
@@ -630,6 +664,10 @@ class ServerInfo extends IPSModule
 
     private function get_cputemp()
     {
+        $with_cputemp = $this->ReadPropertyBoolean('with_cputemp');
+        if ($with_cputemp == false) {
+            return true;
+        }
         // x86_pkg_temp
         $res1 = $this->execute('cat `echo /sys/class/thermal/thermal_zone*/type`');
         if ($res1 == '' || count($res1) < 1) {
@@ -854,6 +892,98 @@ class ServerInfo extends IPSModule
 
         $this->SendDebug(__FUNCTION__, 'CpuUsage=' . $CpuUsage, 0);
         $this->SetValue('CpuUsage', $CpuUsage);
+
+        return true;
+    }
+
+    private function get_symcon()
+    {
+        $with_symcon = $this->ReadPropertyBoolean('with_symcon');
+        if ($with_symcon == false) {
+            return true;
+        }
+
+        $cmd = 'ps -o size,rss,vsize,pmem,etimes,cputimes,pcpu -h -p' . getmypid();
+        $res = $this->execute($cmd);
+        if ($res == '' || count($res) < 1) {
+            $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+            return false;
+        }
+
+        $r = preg_split("/[:\s]+/", $res[0]);
+        if ($r == '' || count($r) < 6) {
+            $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($r, true), 0);
+            return false;
+        }
+
+        $col_size = $r[0];
+        $col_rss = $r[1];
+        $col_vsize = $r[2];
+        $col_pmem = $r[3];
+        $col_etimes = $r[4];
+        $col_cputimes = $r[5];
+        $col_pcpu = $r[6];
+
+        $mem_size = (int) ((float) $col_size / 1024);
+        $mem_rss = (int) ((float) $col_rss / 1024);
+        $mem_virt = (int) ((float) $col_vsize / 1024);
+        $mem_load = (int) ((float) $col_pmem / 1024);
+
+        $this->SendDebug(__FUNCTION__, 'memory size=' . $mem_size . ', rss=' . $mem_rss . ', virtual=' . $mem_virt, 0);
+
+        $this->SetValue('Daemon_MemSize', $mem_size);
+        $this->SetValue('Daemon_MemResident', $mem_rss);
+
+        $time_elapsed = $col_etimes;
+        $time_start = time() - $time_elapsed;
+        $time_elapsed_pretty = '';
+        $sec = $time_elapsed;
+        if ($sec > 86400) {
+            $day = floor($sec / 86400);
+            $sec = $sec % 86400;
+
+            $sec -= floor($sec % 60);
+            if ($day > 3) {
+                $sec -= floor($sec % 3600);
+            }
+            if ($day > 10) {
+                $sec -= floor($sec % 86400);
+            }
+
+            $time_elapsed_pretty .= sprintf('%dd', $day);
+        }
+        if ($sec > 3600) {
+            $hour = floor($sec / 3600);
+            $sec = $sec % 3600;
+
+            $time_elapsed_pretty .= sprintf('%dh', $hour);
+        }
+        if ($sec > 60) {
+            $min = floor($sec / 60);
+            $sec = $sec % 60;
+
+            $time_elapsed_pretty .= sprintf('%dm', $min);
+        }
+        if ($sec > 0) {
+            $time_elapsed_pretty .= sprintf('%ds', $sec);
+        }
+
+        $this->SetValue('Daemon_Running', $time_elapsed);
+        $this->SetValue('Daemon_Running_Pretty', $time_elapsed_pretty);
+
+        $this->SendDebug(__FUNCTION__, 'start=' . date('d.m.Y H:i:s', $time_start) . ', symcon running=' . $time_elapsed . 's (' . $time_elapsed_pretty . ')', 0);
+
+        $cpu_used = $col_cputimes;
+        $cpu_hourly = floor(($cpu_used / $time_elapsed) * 3600 * 10) / 10;
+        $cpu_usage = (float) $col_pcpu;
+
+        $this->SetValue('Daemon_CpuUsedTotal', $cpu_used);
+        if ($time_elapsed > 3600) {
+            $this->SetValue('Daemon_CpuUsedHourly', $cpu_hourly);
+        }
+        $this->SetValue('Daemon_CpuUsage', $cpu_usage);
+
+        $this->SendDebug(__FUNCTION__, 'cpu used=' . $cpu_used . 's, hourly=' . $cpu_hourly . 's/h, usage=' . $cpu_usage . '%', 0);
 
         return true;
     }
