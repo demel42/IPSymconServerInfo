@@ -92,6 +92,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 1.21 @ 07.10.2023 13:40
+  - Fix: Information zum Symcon-Prozess für Symbox adaptiert
+
 - 1.20 @ 03.10.2023 14:36
   - Neu: Ermittlung von Speicherbedarf und Laufzeit (aktuell und für 31 Tage) und Anzeige im Panel "Information"
   - update submodule CommonStubs

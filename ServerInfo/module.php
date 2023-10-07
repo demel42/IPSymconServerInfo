@@ -416,47 +416,47 @@ class ServerInfo extends IPSModule
     {
         $sys = IPS_GetKernelPlatform();
         switch ($sys) {
-        case 'Ubuntu':
-        case 'Raspberry Pi':
-            $res = $this->execute('lsb_release -ds');
-            if ($res == '' || count($res) < 1) {
-                $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+            case 'Ubuntu':
+            case 'Raspberry Pi':
+                $res = $this->execute('lsb_release -ds');
+                if ($res == '' || count($res) < 1) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                    return false;
+                }
+                $OsVersion = $res[0];
+                break;
+            case 'SymBox':
+                $res = $this->execute('ls -t /mnt/system/symupd');
+                if ($res == '' || count($res) < 1) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                    return false;
+                }
+                if (preg_match('/^symupd_(.*).md5$/', $res[0], $r)) {
+                    $OsVersion = 'SymOS ' . $r[1];
+                } else {
+                    $this->SendDebug(__FUNCTION__, 'unknwon data format: ' . print_r($res, true), 0);
+                    return false;
+                }
+                break;
+            case 'Docker':
+            case 'Ubuntu (Docker)':
+            case 'Raspberry Pi (Docker)':
+                $res = $this->execute('cat /etc/os-release');
+                if ($res == '' || count($res) < 1) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                    return false;
+                }
+                if ($res == '' || count($res) < 3) {
+                    $this->SendDebug(__FUNCTION__, 'unknwon data format: ' . print_r($res, true), 0);
+                    $OsVersion = $res;
+                } else {
+                    $OsVersion = $res[0] . ' ' . $res[1];
+                }
+                break;
+            default:
+                $this->SendDebug(__FUNCTION__, 'unsuported OS ' . $sys, 0);
                 return false;
-            }
-            $OsVersion = $res[0];
-            break;
-        case 'SymBox':
-            $res = $this->execute('ls -t /mnt/system/symupd');
-            if ($res == '' || count($res) < 1) {
-                $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
-                return false;
-            }
-            if (preg_match('/^symupd_(.*).md5$/', $res[0], $r)) {
-                $OsVersion = 'SymOS ' . $r[1];
-            } else {
-                $this->SendDebug(__FUNCTION__, 'unknwon data format: ' . print_r($res, true), 0);
-                return false;
-            }
-            break;
-        case 'Docker':
-        case 'Ubuntu (Docker)':
-        case 'Raspberry Pi (Docker)':
-            $res = $this->execute('cat /etc/os-release');
-            if ($res == '' || count($res) < 1) {
-                $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
-                return false;
-            }
-            if ($res == '' || count($res) < 3) {
-                $this->SendDebug(__FUNCTION__, 'unknwon data format: ' . print_r($res, true), 0);
-                $OsVersion = $res;
-            } else {
-                $OsVersion = $res[0] . ' ' . $res[1];
-            }
-            break;
-        default:
-            $this->SendDebug(__FUNCTION__, 'unsuported OS ' . $sys, 0);
-            return false;
-            break;
+                break;
         }
 
         $this->SendDebug(__FUNCTION__, 'OsVersion=' . $OsVersion, 0);
@@ -731,42 +731,85 @@ class ServerInfo extends IPSModule
 
         $sys = IPS_GetKernelPlatform();
         switch ($sys) {
-        case 'Ubuntu':
-        case 'Raspberry Pi':
-        case 'Docker':
-        case 'Ubuntu (Docker)':
-        case 'Raspberry Pi (Docker)':
-            $res = $this->execute('lscpu');
-            if ($res == '' || count($res) < 1) {
-                $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
-                return false;
-            }
-            $v = [];
-            foreach ($res as $r) {
-                $s = preg_split("/:[\s]+/", $r);
-                if (count($s) < 2) {
-                    $this->SendDebug(__FUNCTION__, 'bad data: ' . $r, 0);
-                    continue;
-                }
-                $name = $s[0];
-                $value = $s[1];
-                $v[$name] = $value;
-            }
-            switch ($sys) {
             case 'Ubuntu':
-                if (isset($v['Modellname'])) {
-                    $CpuModel = $v['Modellname'];
-                } elseif (isset($v['Model name'])) {
-                    $CpuModel = $v['Model name'];
-                } else {
-                    $CpuModel = '';
-                }
-                $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
-                $CpuCurFrequency = isset($v['CPU MHz']) ? $v['CPU MHz'] : 0;
-                break;
             case 'Raspberry Pi':
-                $CpuModel = isset($v['Model name']) ? $v['Model name'] : '';
-                $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
+            case 'Docker':
+            case 'Ubuntu (Docker)':
+            case 'Raspberry Pi (Docker)':
+                $res = $this->execute('lscpu');
+                if ($res == '' || count($res) < 1) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                    return false;
+                }
+                $v = [];
+                foreach ($res as $r) {
+                    $s = preg_split("/:[\s]+/", $r);
+                    if (count($s) < 2) {
+                        $this->SendDebug(__FUNCTION__, 'bad data: ' . $r, 0);
+                        continue;
+                    }
+                    $name = $s[0];
+                    $value = $s[1];
+                    $v[$name] = $value;
+                }
+                switch ($sys) {
+                    case 'Ubuntu':
+                        if (isset($v['Modellname'])) {
+                            $CpuModel = $v['Modellname'];
+                        } elseif (isset($v['Model name'])) {
+                            $CpuModel = $v['Model name'];
+                        } else {
+                            $CpuModel = '';
+                        }
+                        $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
+                        $CpuCurFrequency = isset($v['CPU MHz']) ? $v['CPU MHz'] : 0;
+                        break;
+                    case 'Raspberry Pi':
+                        $CpuModel = isset($v['Model name']) ? $v['Model name'] : '';
+                        $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
+                        $res = $this->execute('vcgencmd measure_clock arm ');
+                        if ($res == '' || count($res) < 1) {
+                            $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                            return false;
+                        }
+                        $s = preg_split('/=/', $res[0]);
+                        if (preg_match('/^frequency/', $s[0])) {
+                            $CpuCurFrequency = (int) ((float) $s[1] / 1024 / 1024);
+                        }
+                        break;
+                    case 'Docker':
+                    case 'Ubuntu (Docker)':
+                    case 'Raspberry Pi (Docker)':
+                        $CpuModel = isset($v['Model name']) ? $v['Model name'] : '';
+                        $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
+                        $CpuCurFrequency = isset($v['CPU MHz']) ? $v['CPU MHz'] : 0;
+                        break;
+                }
+                break;
+            case 'SymBox':
+                $res = $this->execute('cat /proc/cpuinfo');
+                if ($res == '' || count($res) < 1) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                    return false;
+                }
+                foreach ($res as $r) {
+                    $s = preg_split("/[\s]+:[\s]+/", $r);
+                    if (count($s) < 2) {
+                        continue;
+                    }
+                    switch ($s[0]) {
+                        case 'model name':
+                            if ($CpuCount == 1) {
+                                $CpuModel = $s[1];
+                            }
+                            break;
+                        case 'processor':
+                            $CpuCount++;
+                            break;
+                        default:
+                            break;
+                    }
+                }
                 $res = $this->execute('vcgencmd measure_clock arm ');
                 if ($res == '' || count($res) < 1) {
                     $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
@@ -777,53 +820,10 @@ class ServerInfo extends IPSModule
                     $CpuCurFrequency = (int) ((float) $s[1] / 1024 / 1024);
                 }
                 break;
-            case 'Docker':
-            case 'Ubuntu (Docker)':
-            case 'Raspberry Pi (Docker)':
-                $CpuModel = isset($v['Model name']) ? $v['Model name'] : '';
-                $CpuCount = isset($v['CPU(s)']) ? $v['CPU(s)'] : 0;
-                $CpuCurFrequency = isset($v['CPU MHz']) ? $v['CPU MHz'] : 0;
+            default:
+                $this->SendDebug(__FUNCTION__, 'unsuported OS ' . $sys, 0);
+                return false;
                 break;
-            }
-            break;
-        case 'SymBox':
-            $res = $this->execute('cat /proc/cpuinfo');
-            if ($res == '' || count($res) < 1) {
-                $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
-                return false;
-            }
-            foreach ($res as $r) {
-                $s = preg_split("/[\s]+:[\s]+/", $r);
-                if (count($s) < 2) {
-                    continue;
-                }
-                switch ($s[0]) {
-                    case 'model name':
-                        if ($CpuCount == 1) {
-                            $CpuModel = $s[1];
-                        }
-                        break;
-                    case 'processor':
-                        $CpuCount++;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            $res = $this->execute('vcgencmd measure_clock arm ');
-            if ($res == '' || count($res) < 1) {
-                $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
-                return false;
-            }
-            $s = preg_split('/=/', $res[0]);
-            if (preg_match('/^frequency/', $s[0])) {
-                $CpuCurFrequency = (int) ((float) $s[1] / 1024 / 1024);
-            }
-            break;
-        default:
-            $this->SendDebug(__FUNCTION__, 'unsuported OS ' . $sys, 0);
-            return false;
-            break;
         }
 
         $this->SendDebug(__FUNCTION__, 'CpuModel=' . $CpuModel . ', CpuCurFrequency=' . $CpuCurFrequency . ' MHz, CpuCount=' . $CpuCount, 0);
@@ -903,39 +903,8 @@ class ServerInfo extends IPSModule
             return true;
         }
 
-        $cmd = 'ps -o size,rss,vsize,pmem,etimes,cputimes,pcpu -h -p' . getmypid();
-        $res = $this->execute($cmd);
-        if ($res == '' || count($res) < 1) {
-            $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
-            return false;
-        }
-
-        $r = preg_split("/[:\s]+/", $res[0]);
-        if ($r == '' || count($r) < 6) {
-            $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($r, true), 0);
-            return false;
-        }
-
-        $col_size = $r[0];
-        $col_rss = $r[1];
-        $col_vsize = $r[2];
-        $col_pmem = $r[3];
-        $col_etimes = $r[4];
-        $col_cputimes = $r[5];
-        $col_pcpu = $r[6];
-
-        $mem_size = (int) ((float) $col_size / 1024);
-        $mem_rss = (int) ((float) $col_rss / 1024);
-        $mem_virt = (int) ((float) $col_vsize / 1024);
-        $mem_load = (int) ((float) $col_pmem / 1024);
-
-        $this->SendDebug(__FUNCTION__, 'memory size=' . $mem_size . ', rss=' . $mem_rss . ', virtual=' . $mem_virt, 0);
-
-        $this->SetValue('Daemon_MemSize', $mem_size);
-        $this->SetValue('Daemon_MemResident', $mem_rss);
-
-        $time_elapsed = $col_etimes;
-        $time_start = time() - $time_elapsed;
+        $time_start = IPS_GetKernelStartTime();
+        $time_elapsed = time() - $time_start;
         $time_elapsed_pretty = '';
         $sec = $time_elapsed;
         if ($sec > 86400) {
@@ -973,17 +942,127 @@ class ServerInfo extends IPSModule
 
         $this->SendDebug(__FUNCTION__, 'start=' . date('d.m.Y H:i:s', $time_start) . ', symcon running=' . $time_elapsed . 's (' . $time_elapsed_pretty . ')', 0);
 
-        $cpu_used = $col_cputimes;
-        $cpu_hourly = floor(($cpu_used / $time_elapsed) * 3600 * 10) / 10;
-        $cpu_usage = (float) $col_pcpu;
+        $sys = IPS_GetKernelPlatform();
+        switch ($sys) {
+            case 'SymBox':
+                $res = $this->execute('ps -o comm,vsz,rss | grep symcon');
+                if ($res == '' || count($res) < 1) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                    return false;
+                }
 
-        $this->SetValue('Daemon_CpuUsedTotal', $cpu_used);
-        if ($time_elapsed > 3600) {
-            $this->SetValue('Daemon_CpuUsedHourly', $cpu_hourly);
+                $r = preg_split("/[:\s]+/", $res[0]);
+                if ($r == '' || count($r) < 3) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($r, true), 0);
+                    return false;
+                }
+
+                $col_size = $r[1];
+                $col_rss = $r[2];
+
+                if (preg_match('/^([0-9\.]*)[gG]/', $col_size, $x)) {
+                    $mem_size = (int) ((float) $x[1] * 1024);
+                } elseif (preg_match('/^([0-9\.]*)[mM]/', $col_size, $x)) {
+                    $mem_size = (int) ((float) $x[1]);
+                } else {
+                    $mem_size = (int) ((float) $col_size / 1024);
+                }
+                if (preg_match('/^([0-9\.]*)[gG]/', $col_rss, $x)) {
+                    $mem_rss = (int) ((float) $x[1] * 1024);
+                } elseif (preg_match('/^([0-9\.]*)[mM]/', $col_rss, $x)) {
+                    $mem_rss = (int) ((float) $x[1]);
+                } else {
+                    $mem_rss = (int) ((float) $col_size / 1024);
+                }
+
+                $this->SendDebug(__FUNCTION__, 'memory size=' . $mem_size . ', rss=' . $mem_rss, 0);
+
+                $this->SetValue('Daemon_MemSize', $mem_size);
+                $this->SetValue('Daemon_MemResident', $mem_rss);
+
+                $res = $this->execute('top -b -n1 | grep "/usr/share/symcon/symcon service" | grep -v grep');
+                if ($res == '' || count($res) < 1) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                    return false;
+                }
+
+                $r = preg_split("/[:\s]+/", $res[0]);
+                if ($r == '' || count($r) < 9) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($r, true), 0);
+                    return false;
+                }
+
+                $col_pcpu = $r[6];
+
+                $res = $this->execute('cat /proc/' . getmypid() . '/stat');
+                if ($res == '' || count($res) < 1) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                    return false;
+                }
+
+                $r = preg_split("/[:\s]+/", $res[0]);
+                if ($r == '' || count($r) < 52) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($r, true), 0);
+                    return false;
+                }
+
+                $CLK_TCK = 100;
+                $utime = $r[13];
+                $stime = $r[14];
+
+                $cpu_used = $utime / $CLK_TCK + $stime / $CLK_TCK;
+                $cpu_hourly = floor(($cpu_used / $time_elapsed) * 3600 * 10) / 10; $cpu_usage = (float) $col_pcpu;
+
+                $this->SetValue('Daemon_CpuUsedTotal', $cpu_used);
+                if ($time_elapsed > 3600) {
+                    $this->SetValue('Daemon_CpuUsedHourly', $cpu_hourly);
+                }
+                $this->SetValue('Daemon_CpuUsage', $cpu_usage);
+
+                $this->SendDebug(__FUNCTION__, 'cpu used=' . $cpu_used . 's, hourly=' . $cpu_hourly . 's/h, usage=' . $cpu_usage . '%', 0);
+                break;
+            default:
+                $res = $this->execute('ps -o size,rss,vsize,pmem,cputimes,pcpu -h -p' . getmypid());
+                if ($res == '' || count($res) < 1) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                    return false;
+                }
+
+                $r = preg_split("/[:\s]+/", $res[0]);
+                if ($r == '' || count($r) < 5) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($r, true), 0);
+                    return false;
+                }
+
+                $col_size = $r[0];
+                $col_rss = $r[1];
+                $col_vsize = $r[2];
+                $col_pmem = $r[3];
+                $col_cputimes = $r[4];
+                $col_pcpu = $r[5];
+
+                $mem_size = (int) ((float) $col_size / 1024);
+                $mem_rss = (int) ((float) $col_rss / 1024);
+                $mem_virt = (int) ((float) $col_vsize / 1024);
+                $mem_load = (int) ((float) $col_pmem / 1024);
+
+                $this->SendDebug(__FUNCTION__, 'memory size=' . $mem_size . ', rss=' . $mem_rss . ', virtual=' . $mem_virt, 0);
+
+                $this->SetValue('Daemon_MemSize', $mem_size);
+                $this->SetValue('Daemon_MemResident', $mem_rss);
+
+                $cpu_used = $col_cputimes;
+                $cpu_hourly = floor(($cpu_used / $time_elapsed) * 3600 * 10) / 10;
+                $cpu_usage = (float) $col_pcpu;
+
+                $this->SetValue('Daemon_CpuUsedTotal', $cpu_used);
+                if ($time_elapsed > 3600) {
+                    $this->SetValue('Daemon_CpuUsedHourly', $cpu_hourly);
+                }
+                $this->SetValue('Daemon_CpuUsage', $cpu_usage);
+
+                $this->SendDebug(__FUNCTION__, 'cpu used=' . $cpu_used . 's, hourly=' . $cpu_hourly . 's/h, usage=' . $cpu_usage . '%', 0); break;
         }
-        $this->SetValue('Daemon_CpuUsage', $cpu_usage);
-
-        $this->SendDebug(__FUNCTION__, 'cpu used=' . $cpu_used . 's, hourly=' . $cpu_hourly . 's/h, usage=' . $cpu_usage . '%', 0);
 
         return true;
     }
