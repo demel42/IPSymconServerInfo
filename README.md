@@ -92,6 +92,9 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 1.21.1 @ 15.10.2023 13:48
+  - update submodule CommonStubs
+
 - 1.21 @ 07.10.2023 13:40
   - Fix: Information zum Symcon-Prozess für Symbox adaptiert
 
