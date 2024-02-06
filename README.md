@@ -92,6 +92,10 @@ GUIDs
 
 ## 7. Versions-Historie
 
+- 1.22 @ 06.02.2024 09:46
+  - Verbesserung: Angleichung interner Bibliotheken anlässlich IPS 7
+  - update submodule CommonStubs
+
 - 1.21 @ 03.11.2023 11:06
   - Fix: Information zum Symcon-Prozess für Symbox adaptiert
   - update submodule CommonStubs
