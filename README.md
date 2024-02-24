@@ -93,8 +93,9 @@ GUIDs
 ## 7. Versions-Historie
 
 - 1.23 @ 24.02.2024 14:17
-  - Fix: Auswertung zum Symcon-Prozess für Docker korrigiert
-  - Fix: Auswertung der Betriebssystem-Version für Docker korrigiert
+  - Fix: Korrekturen für Docker
+    - Auswertung zum Symcon-Prozess
+	- Auswertung der Betriebssystem-Version
   - update submodule CommonStubs
 
 - 1.22 @ 06.02.2024 09:46
