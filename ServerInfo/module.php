@@ -124,6 +124,27 @@ class ServerInfo extends IPSModule
         $with_cputemp = $this->ReadPropertyBoolean('with_cputemp');
         $with_symcon = $this->ReadPropertyBoolean('with_symcon');
 
+        $sys = IPS_GetKernelPlatform();
+        switch ($sys) {
+            case 'Ubuntu':
+                $with_daemon_cpuusage = $with_symcon;
+                break;
+            case 'Raspberry Pi':
+                $with_daemon_cpuusage = $with_symcon;
+                break;
+            case 'Docker':
+            case 'Ubuntu (Docker)':
+            case 'Raspberry Pi (Docker)':
+                $with_daemon_cpuusage = false;
+                break;
+            case 'SymBox':
+                $with_daemon_cpuusage = $with_symcon;
+                break;
+            default:
+                $with_daemon_cpuusage = false;
+                break;
+        }
+
         $vpos = 0;
         // Hostname
         $this->MaintainVariable('Hostname', $this->Translate('Hostname'), VARIABLETYPE_STRING, '', $vpos++, true);
@@ -184,7 +205,7 @@ class ServerInfo extends IPSModule
 
         $this->MaintainVariable('Daemon_CpuUsedTotal', $this->Translate('Daemon: CPU time since start'), VARIABLETYPE_INTEGER, 'ServerInfo.Duration', $vpos++, $with_symcon);
         $this->MaintainVariable('Daemon_CpuUsedHourly', $this->Translate('Daemon: CPU time per hour'), VARIABLETYPE_INTEGER, 'ServerInfo.Duration', $vpos++, $with_symcon);
-        $this->MaintainVariable('Daemon_CpuUsage', $this->Translate('Daemon: cpu usage'), VARIABLETYPE_FLOAT, 'ServerInfo.Usage', $vpos++, $with_symcon);
+        $this->MaintainVariable('Daemon_CpuUsage', $this->Translate('Daemon: cpu usage'), VARIABLETYPE_FLOAT, 'ServerInfo.Usage', $vpos++, $with_daemon_cpuusage);
 
         $vpos = 200;
         $this->MaintainVariable('LastUpdate', $this->Translate('Last update'), VARIABLETYPE_INTEGER, '~UnixTimestamp', $vpos++, true);
@@ -358,6 +379,8 @@ class ServerInfo extends IPSModule
             return;
         }
 
+        $this->SendDebug(__FUNCTION__, 'platform=' . IPS_GetKernelPlatform(), 0);
+
         $this->get_hostname();
         $this->get_version();
         $this->get_memory();
@@ -446,11 +469,22 @@ class ServerInfo extends IPSModule
                     $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
                     return false;
                 }
-                if ($res == '' || count($res) < 3) {
-                    $this->SendDebug(__FUNCTION__, 'unknwon data format: ' . print_r($res, true), 0);
-                    $OsVersion = $res;
+                $pretty_name = '';
+                $name = '';
+                foreach ($res as $r) {
+                    if (preg_match('/^PRETTY_NAME="([^"]*)"/', $r, $q)) {
+                        $pretty_name = $q[1];
+                    }
+                    if (preg_match('/^NAME="([^"]*)"/', $r, $q)) {
+                        $name = $q[1];
+                    }
+                }
+                if ($pretty_name != '') {
+                    $OsVersion = $pretty_name;
+                } elseif ($name != '') {
+                    $OsVersion = $name;
                 } else {
-                    $OsVersion = $res[0] . ' ' . $res[1];
+                    $OsVersion = $res;
                 }
                 break;
             default:
@@ -1011,7 +1045,8 @@ class ServerInfo extends IPSModule
                 $stime = $r[14];
 
                 $cpu_used = $utime / $CLK_TCK + $stime / $CLK_TCK;
-                $cpu_hourly = floor(($cpu_used / $time_elapsed) * 3600 * 10) / 10; $cpu_usage = (float) $col_pcpu;
+                $cpu_hourly = floor(($cpu_used / $time_elapsed) * 3600 * 10) / 10;
+                $cpu_usage = (float) $col_pcpu;
 
                 $this->SetValue('Daemon_CpuUsedTotal', $cpu_used);
                 if ($time_elapsed > 3600) {
@@ -1020,6 +1055,48 @@ class ServerInfo extends IPSModule
                 $this->SetValue('Daemon_CpuUsage', $cpu_usage);
 
                 $this->SendDebug(__FUNCTION__, 'cpu used=' . $cpu_used . 's, hourly=' . $cpu_hourly . 's/h, usage=' . $cpu_usage . '%', 0);
+                break;
+            case 'Docker':
+            case 'Ubuntu (Docker)':
+            case 'Raspberry Pi (Docker)':
+                $res = $this->execute('cat /proc/' . getmypid() . '/stat');
+                if ($res == '' || count($res) < 1) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($res, true), 0);
+                    return false;
+                }
+
+                $r = preg_split("/[:\s]+/", $res[0]);
+                if ($r == '' || count($r) < 52) {
+                    $this->SendDebug(__FUNCTION__, 'bad data: ' . print_r($r, true), 0);
+                    return false;
+                }
+
+                $col_rss = $r[23];
+                $col_vsize = $r[22];
+                $col_size = $r[22];
+
+                $mem_size = (int) ((float) $col_size / 1024);
+                $mem_rss = (int) ((float) $col_rss / 1024);
+                $mem_virt = (int) ((float) $col_vsize / 1024);
+
+                $this->SendDebug(__FUNCTION__, 'memory size=' . $mem_size . ', rss=' . $mem_rss . ', virtual=' . $mem_virt, 0);
+
+                $this->SetValue('Daemon_MemSize', $mem_size);
+                $this->SetValue('Daemon_MemResident', $mem_rss);
+
+                $CLK_TCK = 100;
+                $utime = $r[13];
+                $stime = $r[14];
+
+                $cpu_used = $utime / $CLK_TCK + $stime / $CLK_TCK;
+                $cpu_hourly = floor(($cpu_used / $time_elapsed) * 3600 * 10) / 10;
+
+                $this->SetValue('Daemon_CpuUsedTotal', $cpu_used);
+                if ($time_elapsed > 3600) {
+                    $this->SetValue('Daemon_CpuUsedHourly', $cpu_hourly);
+                }
+
+                $this->SendDebug(__FUNCTION__, 'cpu used=' . $cpu_used . 's, hourly=' . $cpu_hourly . 's/h', 0);
                 break;
             default:
                 $res = $this->execute('ps -o size,rss,vsize,pmem,cputimes,pcpu -h -p' . getmypid());
