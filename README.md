@@ -94,7 +94,7 @@ GUIDs
 
 - 1.23 @ 24.02.2024 14:17
   - Fix: Korrekturen für Docker
-    - Auswertung zum Symcon-Prozess
+    - Information zum Symcon-Prozess
 	- Auswertung der Betriebssystem-Version
   - update submodule CommonStubs
 
