@@ -32,6 +32,7 @@ class ServerInfo extends IPSModule
 
         $this->RegisterPropertyBoolean('with_swap', true);
         $this->RegisterPropertyBoolean('with_cputemp', true);
+        $this->RegisterPropertyBoolean('with_hddtemp', true);
         $this->RegisterPropertyBoolean('with_symcon', true);
 
         $this->RegisterPropertyString('partition0_device', '');
@@ -82,14 +83,17 @@ class ServerInfo extends IPSModule
             $r[] = $this->Translate('supported OS (at this moment only: ') . implode(', ', $sysList) . ')';
         }
 
-        for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
-            $device = $this->ReadPropertyString('disk' . $cnt . '_device');
-            if ($device != '') {
-                $data = exec('hddtemp --version 2>&1', $output, $exitcode);
-                if ($exitcode != 0) {
-                    $r[] = $this->Translate('missing utility "hddtemp"');
+        $with_hddtemp = $this->ReadPropertyBoolean('with_hddtemp');
+        if ($with_hddtemp) {
+            for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
+                $device = $this->ReadPropertyString('disk' . $cnt . '_device');
+                if ($device != '') {
+                    $data = exec('hddtemp --version 2>&1', $output, $exitcode);
+                    if ($exitcode != 0) {
+                        $r[] = $this->Translate('missing utility "hddtemp"');
+                    }
+                    break;
                 }
-                break;
             }
         }
 
@@ -122,6 +126,7 @@ class ServerInfo extends IPSModule
 
         $with_swap = $this->ReadPropertyBoolean('with_swap');
         $with_cputemp = $this->ReadPropertyBoolean('with_cputemp');
+        $with_hddtemp = $this->ReadPropertyBoolean('with_hddtemp');
         $with_symcon = $this->ReadPropertyBoolean('with_symcon');
 
         $sys = IPS_GetKernelPlatform();
@@ -174,12 +179,15 @@ class ServerInfo extends IPSModule
         // Temperatur
         $this->MaintainVariable('CpuTemp', $this->Translate('Temperatur of cpu'), VARIABLETYPE_FLOAT, 'ServerInfo.Temperature', $vpos++, $with_cputemp);
 
-        $cntName = ['1st', '2nd', '3rd', '4th'];
-        for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
-            $dev = $this->ReadPropertyString('disk' . $cnt . '_device');
-            $pfx = 'Disk' . $cnt;
-            $cn = $cntName[$cnt];
-            $this->MaintainVariable($pfx . 'Temp', $this->Translate('Temperatur of ' . $cn . ' disk'), VARIABLETYPE_FLOAT, 'ServerInfo.Temperature', $vpos++, $dev != '');
+		$cntName = ['1st', '2nd', '3rd', '4th'];
+
+        if ($with_hddtemp) {
+            for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
+                $dev = $this->ReadPropertyString('disk' . $cnt . '_device');
+                $pfx = 'Disk' . $cnt;
+                $cn = $cntName[$cnt];
+                $this->MaintainVariable($pfx . 'Temp', $this->Translate('Temperatur of ' . $cn . ' disk'), VARIABLETYPE_FLOAT, 'ServerInfo.Temperature', $vpos++, $dev != '');
+            }
         }
 
         for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
@@ -297,6 +305,12 @@ class ServerInfo extends IPSModule
             'type'    => 'CheckBox',
             'name'    => 'with_cputemp',
             'caption' => 'Show cpu-temperature'
+        ];
+
+        $formElements[] = [
+            'type'    => 'CheckBox',
+            'name'    => 'with_hddtemp',
+            'caption' => 'Show hdd-temperature'
         ];
 
         $formElements[] = [
@@ -702,6 +716,7 @@ class ServerInfo extends IPSModule
         if ($with_cputemp == false) {
             return true;
         }
+
         // x86_pkg_temp
         $res1 = $this->execute('cat `echo /sys/class/thermal/thermal_zone*/type`');
         if ($res1 == '' || count($res1) < 1) {
@@ -731,6 +746,11 @@ class ServerInfo extends IPSModule
 
     private function get_hddtemp()
     {
+        $with_hddtemp = $this->ReadPropertyBoolean('with_hddtemp');
+        if ($with_hddtemp == false) {
+            return true;
+        }
+
         for ($cnt = 0; $cnt < self::$NUM_DEVICE; $cnt++) {
             $device = $this->ReadPropertyString('disk' . $cnt . '_device');
             if ($device == '') {

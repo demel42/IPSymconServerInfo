@@ -26,6 +26,7 @@
 
 			"Show swap-space": "Auslagerungsbereich anzeigen",
 			"Show cpu-temperature": "CPU-Temperatur anzeigen",
+			"Show hdd-temperature": "Festplatten-Temperatur anzeigen",
 			"Collate information of the symcon daemon": "Informationen des Symcon-Dämons zusammenstellen",
 
 			"Update interval": "Aktualisierungsintervall",
