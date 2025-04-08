@@ -94,7 +94,7 @@ GUIDs
 
 - 1.25 @ 08.04.2025 10:33 
   - Änderung: Möglichkeit, das Auslesen von Festplatten-Temperaturen zu deaktivieren
-    Grund dafür ist die Tatsache, das das dafür verwendete Hilfprogramm in neuen Linux-Versionen nicht mehr unterstützt wird.
+    Grund dafür ist die Tatsache, das das dafür verwendete Hilfsprogramm "hddtemp" in neuen Linux-Versionen nicht mehr unterstützt wird
 
 - 1.24 @ 02.01.2025 14:28
   - interne Änderung
